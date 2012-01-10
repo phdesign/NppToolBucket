@@ -1,0 +1,227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{29A99B34-65C1-48A3-986A-03E297782A1F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>phdesign.NppToolBucket</RootNamespace>
+    <AssemblyName>NppToolBucket</AssemblyName>
+    <OutputPath>bin\Debug\</OutputPath>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <Optimize>false</Optimize>
+    <OutputPath>C:\Tools\Notepad++\plugins\</OutputPath>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <DebugType>pdbonly</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FindAndReplace.cs" />
+    <Compile Include="Forms\FindAndReplaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindAndReplaceForm.Designer.cs">
+      <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IndentationSettings.cs" />
+    <Compile Include="DllExport\DllExportAttribute.cs" />
+    <Compile Include="Forms\IndentationSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\IndentationSettingsForm.Designer.cs">
+      <DependentUpon>IndentationSettingsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Infrastructure\Settings.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Infrastructure\WindowWrapper.cs" />
+    <Compile Include="Jayrock\BooleanObject.cs" />
+    <Compile Include="Jayrock\Collections\KeyedCollection.cs" />
+    <Compile Include="Jayrock\Configuration\DictionarySectionHandler.cs" />
+    <Compile Include="Jayrock\Configuration\ListSectionHandler.cs" />
+    <Compile Include="Jayrock\Configuration\TypeListSectionHandler.cs" />
+    <Compile Include="Jayrock\Diagnostics\DebugString.cs" />
+    <Compile Include="Jayrock\DictionaryHelper.cs" />
+    <Compile Include="Jayrock\IAttributeAttachment.cs" />
+    <Compile Include="Jayrock\IndentedTextWriter.cs" />
+    <Compile Include="Jayrock\InternetDate.cs" />
+    <Compile Include="Jayrock\JsonML\JsonMLCodec.cs" />
+    <Compile Include="Jayrock\JsonML\JsonMLException.cs" />
+    <Compile Include="Jayrock\JsonML\JsonMLForm.cs" />
+    <Compile Include="Jayrock\Json\BufferedCharReader.cs" />
+    <Compile Include="Jayrock\Json\Conversion\AnyType.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\AnyImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ArrayImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\BooleanExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\BooleanImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ByteArrayExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ByteArrayImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ComponentExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ComponentImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ControlExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DataRowExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DataRowViewExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DataSetExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DataTableExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DataViewExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DateTimeExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DateTimeImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DbDataRecordExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DictionaryExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\DictionaryImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\EnumerableExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\EnumImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ExportAwareExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ExporterBase.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\GuidImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ImportAwareImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ImporterBase.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\JsonBufferExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\JsonBufferImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\JsonNumberExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\ListImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NameValueCollectionExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NameValueCollectionImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NullableExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NullableImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NumberExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\NumberImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\StringExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\StringImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\Converters\UriImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\CustomTypeDescriptor.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ExportContext.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ExporterCollection.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ExporterListSectionHandler.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IJsonExportable.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IJsonImportable.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ImportContext.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ImporterCollection.cs" />
+    <Compile Include="Jayrock\Json\Conversion\ImporterListSectionHandler.cs" />
+    <Compile Include="Jayrock\Json\Conversion\INonObjectMemberImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IObjectMemberExporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\IObjectMemberImporter.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonConvert.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonDefaultValueAttribute.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonExportAttribue.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonIgnoreAttribute.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonMemberNameAttribute.cs" />
+    <Compile Include="Jayrock\Json\Conversion\JsonMemberNamingConventionAttribute.cs" />
+    <Compile Include="Jayrock\Json\Conversion\PropertyCustomization.cs" />
+    <Compile Include="Jayrock\Json\EmptyJsonWriter.cs" />
+    <Compile Include="Jayrock\Json\InvalidMemberException.cs" />
+    <Compile Include="Jayrock\Json\JsonArray.cs" />
+    <Compile Include="Jayrock\Json\JsonBoolean.cs" />
+    <Compile Include="Jayrock\Json\JsonBuffer.cs" />
+    <Compile Include="Jayrock\Json\JsonBufferReader.cs" />
+    <Compile Include="Jayrock\Json\JsonBufferStorage.cs" />
+    <Compile Include="Jayrock\Json\JsonBufferWriter.cs" />
+    <Compile Include="Jayrock\Json\JsonException.cs" />
+    <Compile Include="Jayrock\Json\JsonImportingWriter.cs" />
+    <Compile Include="Jayrock\Json\JsonMember.cs" />
+    <Compile Include="Jayrock\Json\JsonNull.cs" />
+    <Compile Include="Jayrock\Json\JsonNumber.cs" />
+    <Compile Include="Jayrock\Json\JsonObject.cs" />
+    <Compile Include="Jayrock\Json\JsonReader.cs" />
+    <Compile Include="Jayrock\Json\JsonReaderBase.cs" />
+    <Compile Include="Jayrock\Json\JsonRecorder.cs" />
+    <Compile Include="Jayrock\Json\JsonString.cs" />
+    <Compile Include="Jayrock\Json\JsonText.cs" />
+    <Compile Include="Jayrock\Json\JsonTextReader.cs" />
+    <Compile Include="Jayrock\Json\JsonTextWriter.cs" />
+    <Compile Include="Jayrock\Json\JsonToken.cs" />
+    <Compile Include="Jayrock\Json\JsonTokenClass.cs" />
+    <Compile Include="Jayrock\Json\JsonTokenWriterBase.cs" />
+    <Compile Include="Jayrock\Json\JsonWriter.cs" />
+    <Compile Include="Jayrock\Json\JsonWriterBase.cs" />
+    <Compile Include="Jayrock\Json\JsonWriterBracket.cs" />
+    <Compile Include="Jayrock\Json\NamedJsonBuffer.cs" />
+    <Compile Include="Jayrock\Mask.cs" />
+    <Compile Include="Jayrock\Reflection\Reflector.cs" />
+    <Compile Include="Jayrock\TypeResolution.cs" />
+    <Compile Include="Jayrock\UnixTime.cs" />
+    <Compile Include="Main.cs" />
+    <Compile Include="PluginCore\Editor.cs" />
+    <Compile Include="PluginCore\NppPluginNETBase.cs" />
+    <Compile Include="PluginCore\NppPluginNETHelper.cs" />
+    <Compile Include="Helpers.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="PluginCore\UnmanagedExports.cs" />
+    <Compile Include="Utilities\AssemblyUtils.cs" />
+    <Compile Include="Utilities\Enum\EnumUtils.cs" />
+    <Compile Include="Utilities\Security\MD5.cs" />
+    <Compile Include="Utilities\Security\SHA1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\FindAndReplaceForm.resx">
+      <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\IndentationSettingsForm.resx">
+      <DependentUpon>IndentationSettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\edit-indent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\calendar-small-month.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\binocular--pencil.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>rem copy /y "$(TargetPath)" "C:\Tools\Notepad++\plugins"
+rem copy /y "$(TargetDir)\$(TargetName).pdb" "C:\Tools\Notepad++\plugins"</PostBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
