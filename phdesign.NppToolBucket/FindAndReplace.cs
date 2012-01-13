@@ -269,6 +269,19 @@ namespace phdesign.NppToolBucket
 
         private int ReplaceAll(string findText, string replaceText)
         {
+            if (_searchIn == SearchInOptions.OpenDocuments)
+            {
+                var currentDocument = 0;
+                var currentView = IsViewVisible((int)NppMsg.MAIN_VIEW) ? (int)NppMsg.MAIN_VIEW : (int)NppMsg.SUB_VIEW;
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, currentDocument);
+                _editor = Editor.GetActive();
+                return ReplaceAll(findText, replaceText, currentDocument, currentView);
+            }
+            return ReplaceAll(findText, replaceText, -1, -1);
+        }
+
+        private int ReplaceAll(string findText, string replaceText, int currentDocument, int currentView)
+        {
             if (_searchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined.");
@@ -286,7 +299,6 @@ namespace phdesign.NppToolBucket
             }
             if (posFound != -1 && posFound <= endPosition)
             {
-                // Todo: Is this required?
                 _editor.Call(SciMsg.SCI_BEGINUNDOACTION);
                 while (posFound != -1)
                 {
@@ -319,6 +331,27 @@ namespace phdesign.NppToolBucket
                     replacements++;
                 }
                 _editor.Call(SciMsg.SCI_ENDUNDOACTION);
+            }
+            if (_searchIn == SearchInOptions.OpenDocuments)
+            {
+                // Is there another document?
+
+                var fileCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, currentView + 1);
+                // If there's another document in the view, switch to it
+                if (currentDocument < fileCount - 1)
+                {
+                    Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, ++currentDocument);
+                    _editor = Editor.GetActive();
+                    replacements += ReplaceAll(findText, replaceText, currentDocument, currentView);
+                }
+                else if (currentView == (int)NppMsg.MAIN_VIEW && IsViewVisible((int)NppMsg.SUB_VIEW))
+                {
+                    currentView = (int)NppMsg.SUB_VIEW;
+                    currentDocument = 0;
+                    Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, currentDocument);
+                    _editor = Editor.GetActive();
+                    replacements += ReplaceAll(findText, replaceText, currentDocument, currentView);
+                }
             }
             return replacements;
         }
