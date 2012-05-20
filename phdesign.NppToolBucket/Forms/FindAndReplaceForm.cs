@@ -160,6 +160,11 @@ namespace phdesign.NppToolBucket.Forms
 
             var searchInOptions = new List<string>(EnumUtils.GetEnumDescriptions<SearchInOptions>().Values);
             comboBoxSearchIn.DataSource = searchInOptions;
+
+            textBoxFind.KeyPress += textBox_KeyPress;
+            textBoxFind.KeyDown += textBox_KeyDown;
+            textBoxReplace.KeyPress += textBox_KeyPress;
+            textBoxReplace.KeyDown += textBox_KeyDown;
         }
 
         #endregion
@@ -192,6 +197,33 @@ namespace phdesign.NppToolBucket.Forms
         #endregion
 
         #region Event Handlers
+
+        /// <summary>
+        /// Adds Ctrl-A select all support to the text boxes.
+        /// </summary>
+        private void textBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == '\x1')
+            {
+                ((TextBox)sender).SelectAll();
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Allows Ctrl-Tab to perform normal tabbing between controls.
+        /// Todo: Not working. Need to capture Ctrl-Tab earlier in the call stack? Maybe Form level or KeyPreview.
+        /// See http://stackoverflow.com/questions/371329/how-to-make-enter-on-a-textbox-act-as-tab-button
+        /// </summary>
+        private void textBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Tab && e.Modifiers == Keys.Control)
+            {
+                SelectNextControl((TextBox)sender, true, true, false, true);
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
+        }
 
         private void contextMenuStripReplaceHistory_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
