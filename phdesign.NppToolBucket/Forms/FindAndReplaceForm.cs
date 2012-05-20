@@ -180,11 +180,14 @@ namespace phdesign.NppToolBucket.Forms
         /// <summary>
         /// If longer than 60 chars, show first 40, elipsis and last 17.
         /// </summary>
-        private string Shorten(string value)
+        private static string Shorten(string value)
         {
             const int maxLength = 60;
             const int showStartLength = 40;
             const int showEndLength = 17;
+
+            // Remove any line breaks
+            value = value.Replace("\r", " ").Replace("\n", " ");
 
             if (value.Length <= maxLength)
                 return value;
