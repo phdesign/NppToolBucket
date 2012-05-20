@@ -56,8 +56,6 @@
             this.comboBoxSearchIn = new System.Windows.Forms.ComboBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tableLayoutPanel3.SuspendLayout();
             this.SuspendLayout();
@@ -99,7 +97,7 @@
             this.buttonFindNext.Location = new System.Drawing.Point(3, 3);
             this.buttonFindNext.Name = "buttonFindNext";
             this.buttonFindNext.Size = new System.Drawing.Size(75, 22);
-            this.buttonFindNext.TabIndex = 0;
+            this.buttonFindNext.TabIndex = 9;
             this.buttonFindNext.Text = "&Find Next";
             this.buttonFindNext.UseVisualStyleBackColor = true;
             this.buttonFindNext.Click += new System.EventHandler(this.buttonFindNext_Click);
@@ -109,7 +107,7 @@
             this.buttonFindAll.Location = new System.Drawing.Point(3, 31);
             this.buttonFindAll.Name = "buttonFindAll";
             this.buttonFindAll.Size = new System.Drawing.Size(75, 22);
-            this.buttonFindAll.TabIndex = 1;
+            this.buttonFindAll.TabIndex = 10;
             this.buttonFindAll.Text = "Find A&ll";
             this.buttonFindAll.UseVisualStyleBackColor = true;
             this.buttonFindAll.Click += new System.EventHandler(this.buttonFindAll_Click);
@@ -119,7 +117,7 @@
             this.buttonCount.Location = new System.Drawing.Point(3, 59);
             this.buttonCount.Name = "buttonCount";
             this.buttonCount.Size = new System.Drawing.Size(75, 22);
-            this.buttonCount.TabIndex = 4;
+            this.buttonCount.TabIndex = 11;
             this.buttonCount.Text = "C&ount";
             this.buttonCount.UseVisualStyleBackColor = true;
             this.buttonCount.Click += new System.EventHandler(this.buttonCount_Click);
@@ -136,7 +134,7 @@
             this.buttonReplace.Location = new System.Drawing.Point(3, 96);
             this.buttonReplace.Name = "buttonReplace";
             this.buttonReplace.Size = new System.Drawing.Size(75, 22);
-            this.buttonReplace.TabIndex = 2;
+            this.buttonReplace.TabIndex = 12;
             this.buttonReplace.Text = "&Replace";
             this.buttonReplace.UseVisualStyleBackColor = true;
             this.buttonReplace.Click += new System.EventHandler(this.buttonReplace_Click);
@@ -146,7 +144,7 @@
             this.buttonReplaceAll.Location = new System.Drawing.Point(3, 124);
             this.buttonReplaceAll.Name = "buttonReplaceAll";
             this.buttonReplaceAll.Size = new System.Drawing.Size(75, 22);
-            this.buttonReplaceAll.TabIndex = 3;
+            this.buttonReplaceAll.TabIndex = 13;
             this.buttonReplaceAll.Text = "Replace &All";
             this.buttonReplaceAll.UseVisualStyleBackColor = true;
             this.buttonReplaceAll.Click += new System.EventHandler(this.buttonReplaceAll_Click);
@@ -164,7 +162,7 @@
             this.buttonClose.Location = new System.Drawing.Point(3, 161);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(75, 22);
-            this.buttonClose.TabIndex = 5;
+            this.buttonClose.TabIndex = 14;
             this.buttonClose.Text = "&Close";
             this.buttonClose.UseVisualStyleBackColor = true;
             this.buttonClose.Click += new System.EventHandler(this.buttonClose_Click);
@@ -204,7 +202,7 @@
             this.buttonReplaceHistory.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.buttonReplaceHistory.Name = "buttonReplaceHistory";
             this.buttonReplaceHistory.Size = new System.Drawing.Size(17, 19);
-            this.buttonReplaceHistory.TabIndex = 10;
+            this.buttonReplaceHistory.TabIndex = 3;
             this.buttonReplaceHistory.UseVisualStyleBackColor = true;
             this.buttonReplaceHistory.Click += new System.EventHandler(this.buttonReplaceHistory_Click);
             // 
@@ -227,7 +225,7 @@
             this.buttonFindHistory.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.buttonFindHistory.Name = "buttonFindHistory";
             this.buttonFindHistory.Size = new System.Drawing.Size(17, 19);
-            this.buttonFindHistory.TabIndex = 9;
+            this.buttonFindHistory.TabIndex = 1;
             this.buttonFindHistory.UseVisualStyleBackColor = true;
             this.buttonFindHistory.Click += new System.EventHandler(this.buttonFindHistory_Click);
             // 
@@ -263,7 +261,7 @@
             this.textBoxReplace.Name = "textBoxReplace";
             this.textBoxReplace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxReplace.Size = new System.Drawing.Size(302, 34);
-            this.textBoxReplace.TabIndex = 1;
+            this.textBoxReplace.TabIndex = 2;
             // 
             // textBoxFind
             // 
@@ -303,7 +301,7 @@
             this.checkBoxMatchCase.Location = new System.Drawing.Point(3, 3);
             this.checkBoxMatchCase.Name = "checkBoxMatchCase";
             this.checkBoxMatchCase.Size = new System.Drawing.Size(82, 17);
-            this.checkBoxMatchCase.TabIndex = 0;
+            this.checkBoxMatchCase.TabIndex = 4;
             this.checkBoxMatchCase.Text = "Match ca&se";
             this.checkBoxMatchCase.UseVisualStyleBackColor = true;
             // 
@@ -313,7 +311,7 @@
             this.checkBoxMatchWholeWord.Location = new System.Drawing.Point(3, 26);
             this.checkBoxMatchWholeWord.Name = "checkBoxMatchWholeWord";
             this.checkBoxMatchWholeWord.Size = new System.Drawing.Size(113, 17);
-            this.checkBoxMatchWholeWord.TabIndex = 1;
+            this.checkBoxMatchWholeWord.TabIndex = 5;
             this.checkBoxMatchWholeWord.Text = "Match &whole word";
             this.checkBoxMatchWholeWord.UseVisualStyleBackColor = true;
             // 
@@ -323,7 +321,7 @@
             this.checkBoxSearchFromBegining.Location = new System.Drawing.Point(154, 3);
             this.checkBoxSearchFromBegining.Name = "checkBoxSearchFromBegining";
             this.checkBoxSearchFromBegining.Size = new System.Drawing.Size(126, 17);
-            this.checkBoxSearchFromBegining.TabIndex = 3;
+            this.checkBoxSearchFromBegining.TabIndex = 6;
             this.checkBoxSearchFromBegining.Text = "Search from &begining";
             this.checkBoxSearchFromBegining.UseVisualStyleBackColor = true;
             // 
@@ -333,7 +331,7 @@
             this.checkBoxSearchBackwards.Location = new System.Drawing.Point(154, 26);
             this.checkBoxSearchBackwards.Name = "checkBoxSearchBackwards";
             this.checkBoxSearchBackwards.Size = new System.Drawing.Size(115, 17);
-            this.checkBoxSearchBackwards.TabIndex = 4;
+            this.checkBoxSearchBackwards.TabIndex = 7;
             this.checkBoxSearchBackwards.Text = "Search bac&kwards";
             this.checkBoxSearchBackwards.UseVisualStyleBackColor = true;
             this.checkBoxSearchBackwards.CheckedChanged += new System.EventHandler(this.checkBoxSearchBackwards_CheckedChanged);
@@ -344,7 +342,7 @@
             this.checkBoxUseRegularExpression.Location = new System.Drawing.Point(3, 49);
             this.checkBoxUseRegularExpression.Name = "checkBoxUseRegularExpression";
             this.checkBoxUseRegularExpression.Size = new System.Drawing.Size(133, 17);
-            this.checkBoxUseRegularExpression.TabIndex = 2;
+            this.checkBoxUseRegularExpression.TabIndex = 5;
             this.checkBoxUseRegularExpression.Text = "Use regular e&xpression";
             this.checkBoxUseRegularExpression.UseVisualStyleBackColor = true;
             // 
@@ -365,7 +363,7 @@
             this.comboBoxSearchIn.Location = new System.Drawing.Point(67, 3);
             this.comboBoxSearchIn.Name = "comboBoxSearchIn";
             this.comboBoxSearchIn.Size = new System.Drawing.Size(121, 21);
-            this.comboBoxSearchIn.TabIndex = 2;
+            this.comboBoxSearchIn.TabIndex = 8;
             // 
             // FindAndReplaceForm
             // 
@@ -387,8 +385,6 @@
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
             this.tableLayoutPanel3.ResumeLayout(false);

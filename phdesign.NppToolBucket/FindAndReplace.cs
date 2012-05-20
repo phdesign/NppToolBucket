@@ -40,6 +40,7 @@ namespace phdesign.NppToolBucket
 
         private Editor _editor;
         private FindAndReplaceForm _window;
+        private IWin32Window _owner;
         private Sci_CharacterRange? _searchScope;
         private Sci_CharacterRange? _lastMatch;
         private SearchInOptions _searchIn;
@@ -78,6 +79,7 @@ namespace phdesign.NppToolBucket
                 SearchIn = SearchInOptions.CurrentDocument
             };
             _window.DoAction += OnDoAction;
+            _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
 
         #endregion
@@ -118,7 +120,7 @@ namespace phdesign.NppToolBucket
                     _window.SearchIn = SearchInOptions.SelectedText;
             }
 
-            _window.Show(new WindowWrapper(PluginBase.nppData._nppHandle));
+            _window.Show(_owner);
         }
 
         private void OnDoAction(object sender, DoActionEventArgs doActionEventArgs)
@@ -159,7 +161,7 @@ namespace phdesign.NppToolBucket
                     // Check we have a selection
                     if (_searchScope.Value.cpMin == _searchScope.Value.cpMax)
                     {
-                        MessageBox.Show("No text selected", window.Text);
+                        MessageBox.Show(_owner, "No text selected", window.Text);
                         return;
                     }
                     SearchFromBegining = true;
@@ -173,6 +175,7 @@ namespace phdesign.NppToolBucket
                     if (posFound == -1)
                     {
                         MessageBox.Show(
+                            _owner,
                             string.Format(
                                 "{0} of {1} reached. No match found",
                                 SearchBackwards ? "Start" : "End",
@@ -195,12 +198,14 @@ namespace phdesign.NppToolBucket
                     break;
                 case Action.FindAll:
                     MessageBox.Show(
+                        _owner,
                         string.Format("{0} matches found", MarkAll(findText, false)), 
                         window.Text);
                     _searchScope = null;
                     break;
                 case Action.Count:
                     MessageBox.Show(
+                        _owner,
                         string.Format("{0} matches found", MarkAll(findText, true)), 
                         window.Text);
                     _searchScope = null;
@@ -214,6 +219,7 @@ namespace phdesign.NppToolBucket
                     if (posFoundReplace == -1)
                     {
                         MessageBox.Show(
+                            _owner,
                             string.Format(
                                 "{0} of {1} reached. No match found",
                                 SearchBackwards ? "Start" : "End",
@@ -240,6 +246,7 @@ namespace phdesign.NppToolBucket
                     if (SaveReplaceHistory(replaceText))
                         window.ReplaceHistory = ReplaceHistory.ToArray();
                     MessageBox.Show(
+                        _owner,
                         string.Format("{0} matches replaced", ReplaceAll(findText, replaceText)), 
                         window.Text);
                     _searchScope = null;

@@ -178,13 +178,13 @@ namespace phdesign.NppToolBucket.Forms
         }
 
         /// <summary>
-        /// If longer than 20 chars, show first 15, elipsis and last 5.
+        /// If longer than 60 chars, show first 40, elipsis and last 17.
         /// </summary>
         private string Shorten(string value)
         {
-            const int maxLength = 30;
-            const int showStartLength = 20;
-            const int showEndLength = 7;
+            const int maxLength = 60;
+            const int showStartLength = 40;
+            const int showEndLength = 17;
 
             if (value.Length <= maxLength)
                 return value;
@@ -217,9 +217,12 @@ namespace phdesign.NppToolBucket.Forms
         /// </summary>
         private void textBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Tab && e.Modifiers == Keys.Control)
+            if (e.KeyCode == Keys.Tab && e.Modifiers == Keys.Shift)
             {
-                SelectNextControl((TextBox)sender, true, true, false, true);
+                //SelectNextControl((TextBox)sender, true, true, false, true);
+                var nextControl = GetNextControl((TextBox)sender, true);
+                if (nextControl != null)
+                    nextControl.Focus();
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
@@ -292,6 +295,7 @@ namespace phdesign.NppToolBucket.Forms
         {
             // Hide the form rather than closing it.
             Hide();
+            //Owner.Focus();
             e.Cancel = true;
         }
 
