@@ -162,9 +162,9 @@ namespace phdesign.NppToolBucket.Forms
             comboBoxSearchIn.DataSource = searchInOptions;
 
             textBoxFind.KeyPress += textBox_KeyPress;
-            textBoxFind.KeyDown += textBox_KeyDown;
+            //textBoxFind.KeyDown += textBox_KeyDown;
             textBoxReplace.KeyPress += textBox_KeyPress;
-            textBoxReplace.KeyDown += textBox_KeyDown;
+            //textBoxReplace.KeyDown += textBox_KeyDown;
         }
 
         #endregion
@@ -218,18 +218,18 @@ namespace phdesign.NppToolBucket.Forms
         /// Todo: Not working. Need to capture Ctrl-Tab earlier in the call stack? Maybe Form level or KeyPreview.
         /// See http://stackoverflow.com/questions/371329/how-to-make-enter-on-a-textbox-act-as-tab-button
         /// </summary>
-        private void textBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Tab && e.Modifiers == Keys.Shift)
-            {
-                //SelectNextControl((TextBox)sender, true, true, false, true);
-                var nextControl = GetNextControl((TextBox)sender, true);
-                if (nextControl != null)
-                    nextControl.Focus();
-                e.Handled = true;
-                e.SuppressKeyPress = true;
-            }
-        }
+        //private void textBox_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    if (e.KeyCode == Keys.Tab && e.Modifiers == Keys.Shift)
+        //    {
+        //        //SelectNextControl((TextBox)sender, true, true, false, true);
+        //        var nextControl = GetNextControl((TextBox)sender, true);
+        //        if (nextControl != null)
+        //            nextControl.Focus();
+        //        e.Handled = true;
+        //        e.SuppressKeyPress = true;
+        //    }
+        //}
 
         private void contextMenuStripReplaceHistory_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
