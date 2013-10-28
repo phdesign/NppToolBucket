@@ -178,12 +178,12 @@
     <Compile Include="PluginCore\NppPluginNETHelper.cs" />
     <Compile Include="Helpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PluginCore\UnmanagedExports.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="PluginCore\UnmanagedExports.cs" />
     <Compile Include="Utilities\AssemblyUtils.cs" />
     <Compile Include="Utilities\Enum\EnumUtils.cs" />
     <Compile Include="Utilities\Security\MD5.cs" />
@@ -198,18 +198,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\edit-indent.png" />
+    <None Include="Resources\changeindent.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\calendar-small-month.png" />
+    <None Include="Resources\history.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\binocular--pencil.png" />
+    <None Include="Resources\search.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
