@@ -225,7 +225,8 @@
   <Import Project="$(MSBuildProjectDirectory)\DllExport\NppPlugin.DllExport.targets" />
   <PropertyGroup>
     <PostBuildEvent>rem copy /y "$(TargetPath)" "C:\Tools\Notepad++\plugins"
-rem copy /y "$(TargetDir)\$(TargetName).pdb" "C:\Tools\Notepad++\plugins"</PostBuildEvent>
+
+rem copy /y "$(TargetDir)$(TargetName).pdb" "C:\Tools\Notepad++\plugins"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
