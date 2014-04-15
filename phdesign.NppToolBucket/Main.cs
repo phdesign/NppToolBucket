@@ -95,7 +95,7 @@ namespace phdesign.NppToolBucket
             SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
             SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
             SetCommand((int)CmdIndex.Seperator1, "---", null);
-            SetCommand((int)CmdIndex.GenerateGuid, "Generate GUID", Helpers.GenerateGuid, new ShortcutKey(false, true, true, Keys.G));
+            SetCommand((int)CmdIndex.GenerateGuid, "Generate GUID", GuidGenerator.Show, new ShortcutKey(false, true, true, Keys.G));
             SetCommand((int)CmdIndex.GenerateLoremIpsum, "Generate Lorem Ipsum", Helpers.GenerateLoremIpsum);
             SetCommand((int)CmdIndex.ComputeMD5Hash, "Compute MD5 hash", Helpers.ComputeMD5Hash);
             SetCommand((int)CmdIndex.ComputeSHA1Hash, "Compute SHA1 hash", Helpers.ComputeSHA1Hash);

@@ -53,6 +53,13 @@
     <Compile Include="Forms\FindAndReplaceForm.Designer.cs">
       <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\GuidGeneratorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\GuidGeneratorForm.Designer.cs">
+      <DependentUpon>GuidGeneratorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GuidGenerator.cs" />
     <Compile Include="IndentationSettings.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\IndentationSettingsForm.cs">
@@ -192,6 +199,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Forms\FindAndReplaceForm.resx">
       <DependentUpon>FindAndReplaceForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\GuidGeneratorForm.resx">
+      <DependentUpon>GuidGeneratorForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\IndentationSettingsForm.resx">
       <DependentUpon>IndentationSettingsForm.cs</DependentUpon>
