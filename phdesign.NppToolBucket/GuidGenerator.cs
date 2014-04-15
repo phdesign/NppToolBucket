@@ -72,12 +72,10 @@ namespace phdesign.NppToolBucket
             if (_dialog.Visible) return;
 
             var result = _dialog.ShowDialog(_owner);
+            if (result != DialogResult.OK) return;
 
-            if (result == DialogResult.OK)
-            {
-                var guids = GetGuids(_dialog.IncludeBraces, _dialog.UseUppercase, _dialog.IncludeHyphens, _dialog.HowMany);
-                _editor.SetSelectedText(guids);
-            }
+            var guids = GetGuids(_dialog.IncludeBraces, _dialog.UseUppercase, _dialog.IncludeHyphens, _dialog.HowMany);
+            _editor.SetSelectedText(guids);
         }
 
         /// <summary>

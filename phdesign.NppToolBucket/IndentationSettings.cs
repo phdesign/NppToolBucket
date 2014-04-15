@@ -18,43 +18,71 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
+using phdesign.NppToolBucket.Infrastructure;
 using phdesign.NppToolBucket.PluginCore;
 
 namespace phdesign.NppToolBucket
 {
     internal class IndentationSettings
     {
+        #region Fields
+
         private readonly Editor _editor;
+        /// <summary>
+        /// The single reused instance of the dialog.
+        /// </summary>
+        private readonly IndentationSettingsForm _dialog;
+        /// <summary>
+        /// By attaching to the correct Notepad++ window, if user switching applications, the dialog hides with Notepad++.
+        /// </summary>
+        private readonly IWin32Window _owner;
+        /// <summary>
+        /// This class is a singleton.
+        /// </summary>
+        private static IndentationSettings _instance;
+
+        #endregion
+
+        #region Constructor
 
         private IndentationSettings()
         {
             _editor = Editor.GetActive();
+            _dialog = new IndentationSettingsForm();
+            _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
+
+        #endregion
+
+        #region Public Static Methods
 
         internal static void Show()
         {
-            new IndentationSettings().ShowDialog();
+            if (_instance == null)
+                _instance = new IndentationSettings();
+            _instance.ShowDialog();
         }
+
+        #endregion
+
+        #region Private Methods
 
         // C:\Working\Sandbox\NppPlugin.NET\scintilla\scintilla\scite\src\SciTEBase.cxx@2795
         // C:\Working\Sandbox\NppPlugin.NET\scintilla\scintilla\scite\gtk\SciTEGTK.cxx@1874
         private void ShowDialog()
         {
-            var currentTabSize = _editor.Call(SciMsg.SCI_GETTABWIDTH);
-            var currentIndentSize = _editor.Call(SciMsg.SCI_GETINDENT);
-            var currentUseTabs = (_editor.Call(SciMsg.SCI_GETUSETABS) != 0);
+            if (_dialog.Visible) return;
 
-            var dialog = new IndentationSettingsForm
-            {
-                TabSize = currentTabSize,
-                IndentSize = currentIndentSize,
-                UseTabs = currentUseTabs
-            };
-            dialog.ShowDialog();
+            _dialog.TabSize = _editor.Call(SciMsg.SCI_GETTABWIDTH);
+            _dialog.IndentSize = _editor.Call(SciMsg.SCI_GETINDENT);
+            _dialog.UseTabs = (_editor.Call(SciMsg.SCI_GETUSETABS) != 0);
 
-            SetTabSize(dialog.TabSize, dialog.IndentSize, dialog.UseTabs);
-            if (dialog.ConvertIndent)
-                ConvertIndentation(dialog.TabSize, dialog.UseTabs);
+            var result = _dialog.ShowDialog(_owner);
+            if (result != DialogResult.OK) return;
+
+            SetTabSize(_dialog.TabSize, _dialog.IndentSize, _dialog.UseTabs);
+            if (_dialog.ConvertIndent)
+                ConvertIndentation(_dialog.TabSize, _dialog.UseTabs);
         }
 
         private void SetTabSize(int tabSize, int indentSize, bool useTabs)
@@ -109,5 +137,7 @@ namespace phdesign.NppToolBucket
             }
             return indentation.ToString();
         }
+
+        #endregion
     }
 }
