@@ -195,6 +195,7 @@
     <Compile Include="Utilities\Enum\EnumUtils.cs" />
     <Compile Include="Utilities\Security\MD5.cs" />
     <Compile Include="Utilities\Security\SHA1.cs" />
+    <Compile Include="Utilities\StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Forms\FindAndReplaceForm.resx">

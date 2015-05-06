@@ -22,6 +22,7 @@ using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
 using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.Utilities;
 
 namespace phdesign.NppToolBucket
 {
@@ -122,16 +123,12 @@ namespace phdesign.NppToolBucket
                 _window.SearchIn = SearchInOptions.CurrentDocument;
 
             // If selection is small, use it as find text, otherwise search in selection.
-            var selLength = _editor.Call(SciMsg.SCI_GETSELTEXT);
+            var selLength = _editor.GetSelectionLength();
             if (selLength > 1)
             {
-                // Todo: Use a string / char array as stringbuilder can't handle null characters?
-                //var selectedText = new string(new char[selLength]);
-                var selectedText = new StringBuilder(selLength);
-                _editor.Call(SciMsg.SCI_GETSELTEXT, 0, selectedText);
-                var selectedTextString = selectedText.ToString();
-                if (selLength < UseSelectionAsFindTextLength && !selectedTextString.Contains("\n"))
-                    _window.FindText = selectedTextString;
+                var selectedText = _editor.GetSelectedText();
+                if (selLength < UseSelectionAsFindTextLength && !selectedText.Contains("\n"))
+                    _window.FindText = selectedText;
                 else
                     _window.SearchIn = SearchInOptions.SelectedText;
             }
@@ -162,7 +159,7 @@ namespace phdesign.NppToolBucket
             _searchIn = window.SearchIn;
             if (_searchIn == SearchInOptions.SelectedText)
             {
-                var sel = _editor.GetSelection();
+                var sel = _editor.GetSelectionRange();
                 // Check if user has changed selection - if so reset search scope. Selection should either be initial selection or last found match.
                 if (_searchScope.HasValue && 
                     !sel.Equals(_searchScope.Value) && 
@@ -317,35 +314,30 @@ namespace phdesign.NppToolBucket
             if (findText == "^" && UseRegularExpression) {
                 // Special case for replace all start of line so it hits the first line
                 posFound = startPosition;
-                _editor.Call(SciMsg.SCI_SETTARGETSTART, startPosition);
-                _editor.Call(SciMsg.SCI_SETTARGETEND, startPosition);
+                _editor.SetTargetRange(startPosition, endPosition);
             }
             if (posFound != -1 && posFound <= endPosition)
             {
-                _editor.Call(SciMsg.SCI_BEGINUNDOACTION);
+                _editor.BeginUndoAction();
                 while (posFound != -1)
                 {
-                    var matchEnd = _editor.Call(SciMsg.SCI_GETTARGETEND);
+                    var matchEnd = _editor.GetTargetRange().cpMax;
                     var targetLength = matchEnd - posFound;
                     var movePastEOL = 0;
                     if (targetLength <= 0)
                     {
-                        var nextChar = _editor.Call(SciMsg.SCI_GETCHARAT, matchEnd);
+                        var nextChar = _editor.GetCharAt(matchEnd);
                         if (nextChar == '\r' || nextChar == '\n')
                             movePastEOL = 1;
                     }
-                    var replacedLength = replaceText.Length;
-                    if (UseRegularExpression)
-                        replacedLength = _editor.Call(SciMsg.SCI_REPLACETARGETRE, replaceText.Length, replaceText);
-                    else
-                        _editor.Call(SciMsg.SCI_REPLACETARGET, replaceText.Length, replaceText);
+                    var replacedLength = _editor.ReplaceText(replaceText, UseRegularExpression);
                     // Modify for change caused by replacement
                     endPosition += replacedLength - targetLength;
                     // For the special cases of start of line and end of line
                     // something better could be done but there are too many special cases
                     var lastMatch = posFound + replacedLength + movePastEOL;
                     if (targetLength == 0)
-                        lastMatch = _editor.Call(SciMsg.SCI_POSITIONAFTER, lastMatch); 
+                        lastMatch = _editor.PositionAfter(lastMatch); 
                     if (lastMatch >= endPosition)
                         // Run off the end of the document/selection with an empty match
                         posFound = -1;
@@ -353,7 +345,7 @@ namespace phdesign.NppToolBucket
                         posFound = _editor.FindInTarget(findText, lastMatch, endPosition);
                     replacements++;
                 }
-                _editor.Call(SciMsg.SCI_ENDUNDOACTION);
+                _editor.EndUndoAction();
             }
             if (_searchIn == SearchInOptions.OpenDocuments)
             {
@@ -382,20 +374,15 @@ namespace phdesign.NppToolBucket
         private int Replace(string findText, string replaceText)
         {
             // Check that the highlighted text is a match, if so replace it.
-            var sel = _editor.GetSelection();
+            var sel = _editor.GetSelectionRange();
             SetSearchFlags();
             var posFound = _editor.FindInTarget(findText, sel.cpMin, sel.cpMax);
             if (posFound != -1)
             {
-                var matchStart = _editor.Call(SciMsg.SCI_GETTARGETSTART);
-                var matchEnd = _editor.Call(SciMsg.SCI_GETTARGETEND);
-                if (sel.cpMin == matchStart && sel.cpMax == matchEnd)
+                var match = _editor.GetTargetRange();
+                if (sel.cpMin == match.cpMin && sel.cpMax == match.cpMax)
                 {
-                    var replacedLength = replaceText.Length;
-                    if (UseRegularExpression)
-                        replacedLength = _editor.Call(SciMsg.SCI_REPLACETARGETRE, replaceText.Length, replaceText);
-                    else
-                        _editor.Call(SciMsg.SCI_REPLACETARGET, replaceText.Length, replaceText);
+                    var replacedLength = _editor.ReplaceText(replaceText, UseRegularExpression);
                     _editor.SetSelection(sel.cpMin + replacedLength, sel.cpMin);
                     _lastMatch = null;
                 }
@@ -426,12 +413,12 @@ namespace phdesign.NppToolBucket
                 do
                 {
                     marked++;
-                    var matchEnd = _editor.Call(SciMsg.SCI_GETTARGETEND);
+                    var matchEnd = _editor.GetTargetRange().cpMax;
                     if (!countOnly)
                     {
-                        var line = _editor.Call(SciMsg.SCI_LINEFROMPOSITION, posFound);
+                        var line = _editor.LineFromPosition(posFound);
                         _editor.AddBookmark(line);
-                        _editor.Call(SciMsg.SCI_INDICATORFILLRANGE, posFound, matchEnd - posFound);
+                        _editor.AddFindMark(posFound, matchEnd - posFound);
                     }
                     posFound = _editor.FindInTarget(findText, matchEnd, endPosition);
                 } while ((posFound != -1) && (posFound != posFirstFound));
@@ -452,12 +439,13 @@ namespace phdesign.NppToolBucket
             return marked;
         }
 
-        private void SetSearchFlags() {
-            int searchFlags = (MatchWholeWord ? (int)SciMsg.SCFIND_WHOLEWORD : 0) |
-                (MatchCase ? (int)SciMsg.SCFIND_MATCHCASE : 0) |
-                (UseRegularExpression ? (int)SciMsg.SCFIND_REGEXP : 0) |
-                (UsePosixRegularExpressions ? (int)SciMsg.SCFIND_POSIX : 0);
-            _editor.Call(SciMsg.SCI_SETSEARCHFLAGS, searchFlags);
+        private void SetSearchFlags() 
+        {
+            _editor.SetSearchFlags(
+                MatchWholeWord,
+                MatchCase,
+                UseRegularExpression,
+                UsePosixRegularExpressions);
         }
 
         private bool SaveReplaceHistory(string replaceText)
@@ -514,7 +502,7 @@ namespace phdesign.NppToolBucket
                 }
             }
             
-            var selection = _editor.GetSelection();
+            var selection = _editor.GetSelectionRange();
             var documentLength = _editor.GetDocumentLength();
 
             var startPosition = SearchBackwards
@@ -541,11 +529,9 @@ namespace phdesign.NppToolBucket
             if (posFind != -1)
             {
                 // Highlight if found
-                var start = _editor.Call(SciMsg.SCI_GETTARGETSTART);
-                var end = _editor.Call(SciMsg.SCI_GETTARGETEND);
-                _editor.EnsureRangeVisible(start, end);
-                _editor.SetSelection(start, end);
-                _lastMatch = new Sci_CharacterRange(start, end);
+                _lastMatch = _editor.GetTargetRange();
+                _editor.EnsureRangeVisible(_lastMatch.Value.cpMin, _lastMatch.Value.cpMax);
+                _editor.SetSelection(_lastMatch.Value.cpMin, _lastMatch.Value.cpMax);
             }
             else if (_searchIn == SearchInOptions.OpenDocuments)
             {

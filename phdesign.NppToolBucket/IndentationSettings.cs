@@ -73,9 +73,9 @@ namespace phdesign.NppToolBucket
         {
             if (_dialog.Visible) return;
 
-            _dialog.TabSize = _editor.Call(SciMsg.SCI_GETTABWIDTH);
-            _dialog.IndentSize = _editor.Call(SciMsg.SCI_GETINDENT);
-            _dialog.UseTabs = (_editor.Call(SciMsg.SCI_GETUSETABS) != 0);
+            _dialog.TabSize = _editor.GetTabWidth();
+            _dialog.IndentSize = _editor.GetIndent();
+            _dialog.UseTabs = (_editor.GetUseTabs() != 0);
 
             var result = _dialog.ShowDialog(_owner);
             if (result != DialogResult.OK) return;
@@ -88,35 +88,33 @@ namespace phdesign.NppToolBucket
         private void SetTabSize(int tabSize, int indentSize, bool useTabs)
         {
             if (tabSize > 0)
-                _editor.Call(SciMsg.SCI_SETTABWIDTH, tabSize);
+                _editor.SetTabWidth(tabSize);
             if (indentSize >= 0)
-                _editor.Call(SciMsg.SCI_SETINDENT, indentSize);
-            _editor.Call(SciMsg.SCI_SETUSETABS, useTabs ? 1 : 0);
+                _editor.SetIndent(indentSize);
+            _editor.SetUseTabs(useTabs);
         }
 
         private void ConvertIndentation(int tabSize, bool useTabs)
         {
-            _editor.Call(SciMsg.SCI_BEGINUNDOACTION);
-            var maxLine = _editor.Call(SciMsg.SCI_GETLINECOUNT);
+            _editor.BeginUndoAction();
+            var maxLine = _editor.GetLineCount();
             for (var line = 0; line < maxLine; line++)
             {
-                var lineStart = _editor.Call(SciMsg.SCI_POSITIONFROMLINE, line);
-                var indent = _editor.Call(SciMsg.SCI_GETLINEINDENTATION, line);
-                var indentPos = _editor.Call(SciMsg.SCI_GETLINEINDENTPOSITION, line);
+                var lineStart = _editor.PositionFromLine(line);
+                var indent = _editor.GetLineIndentation(line);
+                var indentPos = _editor.GetLineIndentPosition(line);
                 const int maxIndentation = 1000;
                 if (indent < maxIndentation)
                 {
-                    var indentationNow = _editor.GetRange(lineStart, indentPos, maxIndentation);
+                    var indentationNow = _editor.GetTextByRange(lineStart, indentPos, maxIndentation);
                     var indentationWanted = CreateIndentation(indent, tabSize, !useTabs);
                     if (indentationNow != indentationWanted)
                     {
-                        _editor.Call(SciMsg.SCI_SETTARGETSTART, lineStart);
-                        _editor.Call(SciMsg.SCI_SETTARGETEND, indentPos);
-                        _editor.Call(SciMsg.SCI_REPLACETARGET, indentationWanted.Length, indentationWanted);
+                        _editor.ReplaceText(lineStart, indentPos, indentationWanted);
                     }
                 }
             }
-            _editor.Call(SciMsg.SCI_ENDUNDOACTION);
+            _editor.EndUndoAction();
         }
 
         private static string CreateIndentation(int indent, int tabSize, bool insertSpaces)
