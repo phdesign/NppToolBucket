@@ -35,6 +35,9 @@ Requires .NET Framework 2.0 or higher to be installed on the system.
 Version history
 ---------------
 
+### v1.6
+* Added support for searching and replacing Unicode characters
+
 ### v1.5
 * Keyboard shortcut Alt+Shift+G to generate GUIDs
 * An interface for options to generate GUIDs
