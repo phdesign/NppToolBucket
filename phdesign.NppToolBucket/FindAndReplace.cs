@@ -60,9 +60,6 @@ namespace phdesign.NppToolBucket
         {
             _editor = Editor.GetActive();
 
-            if (Settings.FindHistory == null) Settings.FindHistory = new List<string>();
-            if (Settings.ReplaceHistory == null) Settings.ReplaceHistory = new List<string>();
-
             _window = new FindAndReplaceForm
             {
                 FindHistory = Settings.FindHistory.ToArray(),
@@ -72,9 +69,17 @@ namespace phdesign.NppToolBucket
                 UseRegularExpression = Settings.UseRegularExpression,
                 SearchFromBegining = Settings.SearchFromBegining,
                 SearchBackwards = Settings.SearchBackwards,
-                SearchIn = Settings.SearchIn,
-                ClientSize = Settings.WindowSize
+                SearchIn = Settings.SearchIn
             };
+            if (!Settings.WindowSize.IsEmpty)
+            {
+                _window.ClientSize = Settings.WindowSize;
+            }
+            if (!Settings.WindowLocation.IsEmpty)
+            {
+                _window.StartPosition = FormStartPosition.Manual;
+                _window.Location = Settings.WindowLocation;
+            }
             _window.DoAction += OnDoAction;
             _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
@@ -129,6 +134,7 @@ namespace phdesign.NppToolBucket
             Settings.SearchFromBegining = window.SearchFromBegining;
             Settings.SearchIn = window.SearchIn;
             Settings.WindowSize = window.ClientSize;
+            Settings.WindowLocation = window.Location;
 
             var findText = window.FindText;
             var replaceText = window.ReplaceText;

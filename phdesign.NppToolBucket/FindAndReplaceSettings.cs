@@ -37,6 +37,7 @@ namespace phdesign.NppToolBucket
         public bool SearchBackwards;
         public SearchInOptions SearchIn;
         public Size WindowSize;
+        public Point WindowLocation;
 
         #endregion
 
@@ -69,6 +70,8 @@ namespace phdesign.NppToolBucket
 
             var windowSizeString = _settings.Get(SettingsSection.FindAndReplace, "WindowSize", null);
             WindowSize = DeserialiseSize(windowSizeString);
+            var windowLocationString = _settings.Get(SettingsSection.FindAndReplace, "WindowLocation", null);
+            WindowLocation = DeserialisePoint(windowLocationString);
         }
 
         public void Save()
@@ -87,6 +90,8 @@ namespace phdesign.NppToolBucket
 
             var windowSizeString = SerialiseSize(WindowSize);
             _settings.Set(SettingsSection.FindAndReplace, "WindowSize", windowSizeString);
+            var windowLocationString = SerialisePoint(WindowLocation);
+            _settings.Set(SettingsSection.FindAndReplace, "WindowLocation", windowLocationString);
 
             _settings.Save();
         }
@@ -94,6 +99,30 @@ namespace phdesign.NppToolBucket
         #endregion
 
         #region Private Methods
+
+        private static string SerialisePoint(Point p)
+        {
+            return p.IsEmpty ? "" : string.Format("{0},{1}", p.X, p.Y);
+        }
+
+        private static Point DeserialisePoint(string s)
+        {
+            try
+            {
+                var parts = s.Split(new[] { ',' });
+                if (parts.Length == 2)
+                {
+                    int x;
+                    int y;
+                    if (int.TryParse(parts[0], out x) && int.TryParse(parts[1], out y))
+                        return new Point(x, y);
+                }
+            }
+            catch (Exception)
+            {
+            }
+            return new Point();
+        }
 
         private static string SerialiseSize(Size size)
         {
@@ -116,7 +145,7 @@ namespace phdesign.NppToolBucket
             catch (Exception)
             {
             }
-            return new Size(490, 204);
+            return new Size();
         }
 
         private static string SerialiseList(List<string> list)
