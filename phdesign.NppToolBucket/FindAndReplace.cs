@@ -16,26 +16,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
 using phdesign.NppToolBucket.PluginCore;
-using phdesign.NppToolBucket.Utilities;
 
 namespace phdesign.NppToolBucket
 {
-    public enum SearchInOptions
-    {
-        [Description("Selected Text")]
-        SelectedText = 0,
-        [Description("Current Document")]
-        CurrentDocument,
-        [Description("All Open Documents")]
-        OpenDocuments
-    }
-
     /// <summary>
     /// Todo: Check different types of selection (e.g. by column), how does this affect us?
     /// </summary>
@@ -60,16 +47,8 @@ namespace phdesign.NppToolBucket
         private IWin32Window _owner;
         private Sci_CharacterRange? _searchScope;
         private Sci_CharacterRange? _lastMatch;
-        private SearchInOptions _searchIn;
 
-        // Config Settings
-        public static List<string> FindHistory { get; set; }
-        public static List<string> ReplaceHistory { get; set; }
-        public static bool MatchCase { get; set; }
-        public static bool MatchWholeWord { get; set; }
-        public static bool UseRegularExpression { get; set; }
-        public static bool SearchFromBegining { get; set; }
-        public static bool SearchBackwards { get; set; }
+        internal static FindAndReplaceSettings Settings;
 
         private static FindAndReplace _instance;
 
@@ -81,19 +60,20 @@ namespace phdesign.NppToolBucket
         {
             _editor = Editor.GetActive();
 
-            if (FindHistory == null) FindHistory = new List<string>();
-            if (ReplaceHistory == null) ReplaceHistory = new List<string>();
+            if (Settings.FindHistory == null) Settings.FindHistory = new List<string>();
+            if (Settings.ReplaceHistory == null) Settings.ReplaceHistory = new List<string>();
 
             _window = new FindAndReplaceForm
             {
-                FindHistory = FindHistory.ToArray(),
-                ReplaceHistory = ReplaceHistory.ToArray(),
-                MatchCase = MatchCase,
-                MatchWholeWord = MatchWholeWord,
-                UseRegularExpression = UseRegularExpression,
-                SearchFromBegining = SearchFromBegining,
-                SearchBackwards = SearchBackwards,
-                SearchIn = SearchInOptions.CurrentDocument
+                FindHistory = Settings.FindHistory.ToArray(),
+                ReplaceHistory = Settings.ReplaceHistory.ToArray(),
+                MatchCase = Settings.MatchCase,
+                MatchWholeWord = Settings.MatchWholeWord,
+                UseRegularExpression = Settings.UseRegularExpression,
+                SearchFromBegining = Settings.SearchFromBegining,
+                SearchBackwards = Settings.SearchBackwards,
+                SearchIn = Settings.SearchIn,
+                ClientSize = Settings.WindowSize
             };
             _window.DoAction += OnDoAction;
             _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
@@ -142,11 +122,13 @@ namespace phdesign.NppToolBucket
             if (window == null) return;
 
             // Set options
-            MatchCase = window.MatchCase;
-            MatchWholeWord = window.MatchWholeWord;
-            UseRegularExpression = window.UseRegularExpression;
-            SearchBackwards = window.SearchBackwards;
-            SearchFromBegining = window.SearchFromBegining;
+            Settings.MatchCase = window.MatchCase;
+            Settings.MatchWholeWord = window.MatchWholeWord;
+            Settings.UseRegularExpression = window.UseRegularExpression;
+            Settings.SearchBackwards = window.SearchBackwards;
+            Settings.SearchFromBegining = window.SearchFromBegining;
+            Settings.SearchIn = window.SearchIn;
+            Settings.WindowSize = window.ClientSize;
 
             var findText = window.FindText;
             var replaceText = window.ReplaceText;
@@ -154,10 +136,8 @@ namespace phdesign.NppToolBucket
             if (string.IsNullOrEmpty(findText)) return;
             // Update history
             if (SaveFindHistory(findText))
-                window.FindHistory = FindHistory.ToArray();
-            // Get search scope if required.
-            _searchIn = window.SearchIn;
-            if (_searchIn == SearchInOptions.SelectedText)
+                window.FindHistory = Settings.FindHistory.ToArray();
+            if (Settings.SearchIn == SearchInOptions.SelectedText)
             {
                 var sel = _editor.GetSelectionRange();
                 // Check if user has changed selection - if so reset search scope. Selection should either be initial selection or last found match.
@@ -177,7 +157,7 @@ namespace phdesign.NppToolBucket
                         MessageBox.Show(_owner, "No text selected", window.Text);
                         return;
                     }
-                    SearchFromBegining = true;
+                    Settings.SearchFromBegining = true;
                 }
             }
 
@@ -191,14 +171,14 @@ namespace phdesign.NppToolBucket
                             _owner,
                             string.Format(
                                 "{0} of {1} reached. No match found",
-                                SearchBackwards ? "Start" : "End",
-                                _searchIn == SearchInOptions.SelectedText ? "scope" : "document(s)"),
+                                Settings.SearchBackwards ? "Start" : "End",
+                                Settings.SearchIn == SearchInOptions.SelectedText ? "scope" : "document(s)"),
                             window.Text);
-                        // If we haven't started from begining of document, turn that option on.
-                        if (!SearchFromBegining)
+                        // If we haven't started from beginning of document, turn that option on.
+                        if (!Settings.SearchFromBegining)
                             window.SearchFromBegining = true;
                         // Reset search in selection
-                        if (_searchIn == SearchInOptions.SelectedText)
+                        if (Settings.SearchIn == SearchInOptions.SelectedText)
                             _editor.SetSelection(_searchScope.Value.cpMin, _searchScope.Value.cpMax);
                         // Clear search scope
                         _searchScope = null;
@@ -227,7 +207,7 @@ namespace phdesign.NppToolBucket
                     // Todo: Check if readonly
                     // if ((*_ppEditView)->getCurrentBuffer()->isReadOnly()) return false;
                     if (SaveReplaceHistory(replaceText))
-                        window.ReplaceHistory = ReplaceHistory.ToArray();
+                        window.ReplaceHistory = Settings.ReplaceHistory.ToArray();
                     var posFoundReplace = Replace(findText, replaceText);
                     if (posFoundReplace == -1)
                     {
@@ -235,14 +215,14 @@ namespace phdesign.NppToolBucket
                             _owner,
                             string.Format(
                                 "{0} of {1} reached. No match found",
-                                SearchBackwards ? "Start" : "End",
-                                _searchIn == SearchInOptions.SelectedText ? "scope" : "document"),
+                                Settings.SearchBackwards ? "Start" : "End",
+                                Settings.SearchIn == SearchInOptions.SelectedText ? "scope" : "document"),
                             window.Text);
                         // If we haven't started from begining of document, turn that option on.
-                        if (!SearchFromBegining)
+                        if (!Settings.SearchFromBegining)
                             window.SearchFromBegining = true;
                         // Reset search in selection
-                        if (_searchIn == SearchInOptions.SelectedText)
+                        if (Settings.SearchIn == SearchInOptions.SelectedText)
                             _editor.SetSelection(_searchScope.Value.cpMin, _searchScope.Value.cpMax);
                         // Clear search scope
                         _searchScope = null;
@@ -257,7 +237,7 @@ namespace phdesign.NppToolBucket
                     // Todo: Check if readonly
                     // if ((*_ppEditView)->getCurrentBuffer()->isReadOnly()) return false;
                     if (SaveReplaceHistory(replaceText))
-                        window.ReplaceHistory = ReplaceHistory.ToArray();
+                        window.ReplaceHistory = Settings.ReplaceHistory.ToArray();
                     MessageBox.Show(
                         _owner,
                         string.Format("{0} matches replaced", ReplaceAll(findText, replaceText)), 
@@ -289,7 +269,7 @@ namespace phdesign.NppToolBucket
 
         private int ReplaceAll(string findText, string replaceText)
         {
-            if (_searchIn == SearchInOptions.OpenDocuments)
+            if (Settings.SearchIn == SearchInOptions.OpenDocuments)
             {
                 var currentDocument = 0;
                 var currentView = IsViewVisible((int)NppMsg.MAIN_VIEW) ? (int)NppMsg.MAIN_VIEW : (int)NppMsg.SUB_VIEW;
@@ -302,16 +282,16 @@ namespace phdesign.NppToolBucket
 
         private int ReplaceAll(string findText, string replaceText, int currentDocument, int currentView)
         {
-            if (_searchIn == SearchInOptions.SelectedText && 
+            if (Settings.SearchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined.");
 
             var replacements = 0;
             SetSearchFlags();
-            var startPosition = _searchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
-            var endPosition = _searchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMax :_editor.GetDocumentLength();
+            var startPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
+            var endPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMax :_editor.GetDocumentLength();
             var posFound = _editor.FindInTarget(findText, startPosition, endPosition);
-            if (findText == "^" && UseRegularExpression) {
+            if (findText == "^" && Settings.UseRegularExpression) {
                 // Special case for replace all start of line so it hits the first line
                 posFound = startPosition;
                 _editor.SetTargetRange(startPosition, endPosition);
@@ -330,7 +310,7 @@ namespace phdesign.NppToolBucket
                         if (nextChar == '\r' || nextChar == '\n')
                             movePastEOL = 1;
                     }
-                    var replacedLength = _editor.ReplaceText(replaceText, UseRegularExpression);
+                    var replacedLength = _editor.ReplaceText(replaceText, Settings.UseRegularExpression);
                     // Modify for change caused by replacement
                     endPosition += replacedLength - targetLength;
                     // For the special cases of start of line and end of line
@@ -347,7 +327,7 @@ namespace phdesign.NppToolBucket
                 }
                 _editor.EndUndoAction();
             }
-            if (_searchIn == SearchInOptions.OpenDocuments)
+            if (Settings.SearchIn == SearchInOptions.OpenDocuments)
             {
                 // Is there another document?
 
@@ -382,7 +362,7 @@ namespace phdesign.NppToolBucket
                 var match = _editor.GetTargetRange();
                 if (sel.cpMin == match.cpMin && sel.cpMax == match.cpMax)
                 {
-                    var replacedLength = _editor.ReplaceText(replaceText, UseRegularExpression);
+                    var replacedLength = _editor.ReplaceText(replaceText, Settings.UseRegularExpression);
                     _editor.SetSelection(sel.cpMin + replacedLength, sel.cpMin);
                     _lastMatch = null;
                 }
@@ -392,14 +372,14 @@ namespace phdesign.NppToolBucket
 
         private int MarkAll(string findText, bool countOnly)
         {
-            if (_searchIn == SearchInOptions.SelectedText && 
+            if (Settings.SearchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined.");
             
             var marked = 0;
             SetSearchFlags();
-            var startPosition = _searchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
-            var endPosition = _searchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMax : _editor.GetDocumentLength();
+            var startPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
+            var endPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMax : _editor.GetDocumentLength();
             var posFirstFound = _editor.FindInTarget(findText, startPosition, endPosition);
 
             if (!countOnly)
@@ -428,11 +408,11 @@ namespace phdesign.NppToolBucket
                 {
                     var posNextFound = FindNext(findText);
                     // Wrap around if not found.
-                    if (posNextFound == -1 && !SearchFromBegining)
+                    if (posNextFound == -1 && !Settings.SearchFromBegining)
                     {
-                        SearchFromBegining = true;
+                        Settings.SearchFromBegining = true;
                         FindNext(findText);
-                        SearchFromBegining = false;
+                        Settings.SearchFromBegining = false;
                     }
                 }
             }
@@ -442,9 +422,9 @@ namespace phdesign.NppToolBucket
         private void SetSearchFlags() 
         {
             _editor.SetSearchFlags(
-                MatchWholeWord,
-                MatchCase,
-                UseRegularExpression,
+                Settings.MatchWholeWord,
+                Settings.MatchCase,
+                Settings.UseRegularExpression,
                 UsePosixRegularExpressions);
         }
 
@@ -452,11 +432,11 @@ namespace phdesign.NppToolBucket
         {
             if (string.IsNullOrEmpty(replaceText)) return false;
 
-            ReplaceHistory.Remove(replaceText);
-            ReplaceHistory.Insert(0, replaceText);
+            Settings.ReplaceHistory.Remove(replaceText);
+            Settings.ReplaceHistory.Insert(0, replaceText);
             // Limit list to MaxHistoryItems
-            if (MaxHistoryItems > 0 && ReplaceHistory.Count > MaxHistoryItems)
-                ReplaceHistory.RemoveRange(MaxHistoryItems - 1, ReplaceHistory.Count - MaxHistoryItems);
+            if (MaxHistoryItems > 0 && Settings.ReplaceHistory.Count > MaxHistoryItems)
+                Settings.ReplaceHistory.RemoveRange(MaxHistoryItems - 1, Settings.ReplaceHistory.Count - MaxHistoryItems);
             return true;
         }
 
@@ -464,24 +444,24 @@ namespace phdesign.NppToolBucket
         {
             if (string.IsNullOrEmpty(findText)) return false;
 
-            FindHistory.Remove(findText);
-            FindHistory.Insert(0, findText);
+            Settings.FindHistory.Remove(findText);
+            Settings.FindHistory.Insert(0, findText);
             // Limit list to MaxHistoryItems
-            if (MaxHistoryItems > 0 && FindHistory.Count > MaxHistoryItems)
-                FindHistory.RemoveRange(MaxHistoryItems - 1, FindHistory.Count - MaxHistoryItems);
+            if (MaxHistoryItems > 0 && Settings.FindHistory.Count > MaxHistoryItems)
+                Settings.FindHistory.RemoveRange(MaxHistoryItems - 1, Settings.FindHistory.Count - MaxHistoryItems);
             return true;
         }
 
         private int FindNext(string findText)
         {
-            if (_searchIn == SearchInOptions.SelectedText && 
+            if (Settings.SearchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined."); 
 
-            if (_searchIn == SearchInOptions.OpenDocuments && SearchFromBegining)
+            if (Settings.SearchIn == SearchInOptions.OpenDocuments && Settings.SearchFromBegining)
             {
                 // Assumes that both views ALWAYS have one document open (index 0). Notepad++ always shows a 'New 1' document if everthing else is closed.
-                if (!SearchBackwards)
+                if (!Settings.SearchBackwards)
                 {
                     Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, IsViewVisible((int)NppMsg.MAIN_VIEW) ? (int)NppMsg.MAIN_VIEW : (int)NppMsg.SUB_VIEW, 0);
                     _editor = Editor.GetActive();
@@ -505,22 +485,22 @@ namespace phdesign.NppToolBucket
             var selection = _editor.GetSelectionRange();
             var documentLength = _editor.GetDocumentLength();
 
-            var startPosition = SearchBackwards
-                ? SearchFromBegining
-                    ? _searchIn == SearchInOptions.SelectedText 
+            var startPosition = Settings.SearchBackwards
+                ? Settings.SearchFromBegining
+                    ? Settings.SearchIn == SearchInOptions.SelectedText 
                         ? _searchScope.Value.cpMax
                         : documentLength 
                     : selection.cpMin
-                : SearchFromBegining
-                    ? _searchIn == SearchInOptions.SelectedText 
+                : Settings.SearchFromBegining
+                    ? Settings.SearchIn == SearchInOptions.SelectedText 
                         ? _searchScope.Value.cpMin
                         : 0 
                     : selection.cpMax;
-            var endPosition = SearchBackwards
-                ? _searchIn == SearchInOptions.SelectedText
+            var endPosition = Settings.SearchBackwards
+                ? Settings.SearchIn == SearchInOptions.SelectedText
                     ? _searchScope.Value.cpMin
                     : 0
-                : _searchIn == SearchInOptions.SelectedText
+                : Settings.SearchIn == SearchInOptions.SelectedText
                     ? _searchScope.Value.cpMax
                     : documentLength;
 
@@ -533,13 +513,13 @@ namespace phdesign.NppToolBucket
                 _editor.EnsureRangeVisible(_lastMatch.Value.cpMin, _lastMatch.Value.cpMax);
                 _editor.SetSelection(_lastMatch.Value.cpMin, _lastMatch.Value.cpMax);
             }
-            else if (_searchIn == SearchInOptions.OpenDocuments)
+            else if (Settings.SearchIn == SearchInOptions.OpenDocuments)
             {
                 // Check next document
                 int currentView;
                 Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out currentView);
                 var currentFileIndex = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDOCINDEX, 0, currentView);
-                if (!SearchBackwards)
+                if (!Settings.SearchBackwards)
                 {
                     // Searching forwards
                     var fileCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, currentView + 1);
@@ -571,7 +551,7 @@ namespace phdesign.NppToolBucket
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, view, fileIndex);
             _editor = Editor.GetActive();
             // This statement avoids a loop if there's no match in the first document, it calls FindInOtherDocument but if SearchFromBegining is true it starts back at first document again.
-            SearchFromBegining = false;
+            Settings.SearchFromBegining = false;
             // Reset cursor position to top of documnet
             _editor.SetSelection(0, 0);
             return FindNext(findText);

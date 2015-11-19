@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Jayrock.Json.Conversion;
 using phdesign.NppToolBucket.Infrastructure;
 using phdesign.NppToolBucket.PluginCore;
 using phdesign.NppToolBucket.Utilities;
@@ -80,17 +78,7 @@ namespace phdesign.NppToolBucket
         {
             _settings = new Settings(IniFilePath);
             _showTabBarIcons = _settings.GetBool(SettingsSection.Global, "ShowTabBarIcons", true);
-            FindAndReplace.MatchCase = _settings.GetBool(SettingsSection.FindAndReplace, "MatchCase", false);
-            FindAndReplace.MatchWholeWord = _settings.GetBool(SettingsSection.FindAndReplace, "MatchWholeWord", false);
-            FindAndReplace.SearchBackwards = _settings.GetBool(SettingsSection.FindAndReplace, "SearchBackwards", false);
-            FindAndReplace.SearchFromBegining = _settings.GetBool(SettingsSection.FindAndReplace, "SearchFromBegining", false);
-            FindAndReplace.UseRegularExpression = _settings.GetBool(SettingsSection.FindAndReplace, "UseRegularExpression", false);
-            var findHistory = _settings.Get(SettingsSection.FindAndReplace, "FindHistory", null);
-            if (!string.IsNullOrEmpty(findHistory))
-                FindAndReplace.FindHistory = new List<string>(Deserialise(findHistory));
-            var replaceHistory = _settings.Get(SettingsSection.FindAndReplace, "ReplaceHistory", null);
-            if (!string.IsNullOrEmpty(replaceHistory))
-                FindAndReplace.ReplaceHistory = new List<string>(Deserialise(replaceHistory));
+            FindAndReplace.Settings = new FindAndReplaceSettings(_settings);
 
             SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
             SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
@@ -143,16 +131,7 @@ namespace phdesign.NppToolBucket
         {
             _settings.Set(SettingsSection.Global, "Version", AssemblyUtils.Version);
             //_settings.Set(SettingsSection.Global, "ShowTabBarIcons", _showTabBarIcons);
-            _settings.Set(SettingsSection.FindAndReplace, "MatchCase", FindAndReplace.MatchCase);
-            _settings.Set(SettingsSection.FindAndReplace, "MatchWholeWord", FindAndReplace.MatchWholeWord);
-            _settings.Set(SettingsSection.FindAndReplace, "SearchBackwards", FindAndReplace.SearchBackwards);
-            _settings.Set(SettingsSection.FindAndReplace, "SearchFromBegining", FindAndReplace.SearchFromBegining);
-            _settings.Set(SettingsSection.FindAndReplace, "UseRegularExpression", FindAndReplace.UseRegularExpression);
-            if (FindAndReplace.FindHistory != null && FindAndReplace.FindHistory.Count > 0)
-                _settings.Set(SettingsSection.FindAndReplace, "FindHistory", Serialise(FindAndReplace.FindHistory.ToArray()));
-            if (FindAndReplace.ReplaceHistory != null && FindAndReplace.ReplaceHistory.Count > 0)
-                _settings.Set(SettingsSection.FindAndReplace, "ReplaceHistory", Serialise(FindAndReplace.ReplaceHistory.ToArray()));
-            _settings.Save();
+            FindAndReplace.Settings.Save();
         }
 
         #endregion
@@ -171,34 +150,6 @@ namespace phdesign.NppToolBucket
                 string.Format("{0} Plugin", PluginName),
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        /// <summary>
-        /// Serialises a string array to a string using Jayrock JSON parser.
-        /// http://msdn.microsoft.com/en-us/library/bb299886.aspx#intro_to_json_topic5
-        /// http://jayrock.berlios.de/
-        /// </summary>
-        /// <param name="array">The array to serialise.</param>
-        /// <returns>JSON representation of array.</returns>
-        private static string Serialise(string[] array)
-        {
-            return JsonConvert.ExportToString(array);
-        }
-
-        /// <summary>
-        /// Deserialises a JSON string to a string array using Jayrock JSON parser.
-        /// http://msdn.microsoft.com/en-us/library/bb299886.aspx#intro_to_json_topic5
-        /// http://jayrock.berlios.de/
-        /// </summary>
-        /// <param name="s">The JSON representation of the array.</param>
-        /// <returns>Array of string.</returns>
-        private static string[] Deserialise(string s)
-        {
-            return JsonConvert.Import<string[]>(s);
         }
 
         #endregion
