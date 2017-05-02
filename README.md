@@ -35,6 +35,9 @@ Requires .NET Framework 2.0 or higher to be installed on the system.
 Version history
 ---------------
 
+### v1.7
+* Persisting 'Search In' option, window size and window location for the Find and Replace dialog
+
 ### v1.6
 * Added support for searching and replacing Unicode characters
 
