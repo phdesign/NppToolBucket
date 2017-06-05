@@ -1,19 +1,4 @@
-﻿/*
- * Copyright 2011-2012 Paul Heasley
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
+﻿// NPP plugin platform for .Net v0.93.96 by Kasper B. Graversen etc.
 using System;
 using System.Runtime.InteropServices;
 
@@ -25,26 +10,20 @@ namespace NppPlugin.DllExport
         public DllExportAttribute()
         {
         }
+
         public DllExportAttribute(string exportName)
             : this(exportName, CallingConvention.StdCall)
         {
         }
+
         public DllExportAttribute(string exportName, CallingConvention callingConvention)
         {
             ExportName = exportName;
             CallingConvention = callingConvention;
         }
-        CallingConvention _callingConvention;
-        public CallingConvention CallingConvention
-        {
-            get { return _callingConvention; }
-            set { _callingConvention = value; }
-        }
-        string _exportName;
-        public string ExportName
-        {
-            get { return _exportName; }
-            set { _exportName = value; }
-        }
+
+        public CallingConvention CallingConvention { get; set; }
+
+        public string ExportName { get; set; }
     }
 }

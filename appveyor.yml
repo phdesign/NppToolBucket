@@ -1,0 +1,77 @@
+version: 1.7.{build}
+image: Visual Studio 2017
+
+
+environment:
+  matrix:
+  - PlatformToolset: v140
+  - PlatformToolset: v141
+
+platform:
+    - x64
+    - Any CPU
+
+configuration:
+    - Release
+    - Debug
+
+install:
+    - if "%platform%"=="x64" set archi=amd64
+    - if "%platform%"=="x64" set platform_input=x64
+    - if "%platform%"=="Any CPU" set archi=x86
+    - if "%platform%"=="Any CPU" set platform_input=Any CPU
+    - if "%PlatformToolset%"=="v140" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
+    - if "%PlatformToolset%"=="v141" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
+
+
+build:
+    parallel: true                  # enable MSBuild parallel builds
+    verbosity: minimal
+
+build_script:
+    - cd "%APPVEYOR_BUILD_FOLDER%"
+    - msbuild phdesign.NppToolBucket.sln /m /p:configuration="%configuration%" /p:platform="%platform_input%" /p:PlatformToolset="%PlatformToolset%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+    - cd "%APPVEYOR_BUILD_FOLDER%"\phdesign.NppToolBucket
+    - ps: >-
+
+        if ($env:PLATFORM_INPUT -eq "x64" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin\x64\$env:CONFIGURATION\NppToolBucket.dll" -FileName NppToolBucket.dll
+        }
+
+        if ($env:PLATFORM_INPUT -eq "Any CPU" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin\$env:CONFIGURATION\NppToolBucket.dll" -FileName NppToolBucket.dll
+        }
+
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140") {
+            if($env:PLATFORM_INPUT -eq "x64"){
+            $ZipFileName = "NppToolBucket_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
+            Remove-Item bin\x64\$env:CONFIGURATION\*.exp
+            Remove-Item bin\x64\$env:CONFIGURATION\*.lib
+            7z a $ZipFileName bin\x64\$env:CONFIGURATION\*
+            }
+            if($env:PLATFORM_INPUT -eq "Any CPU"){
+            $ZipFileName = "NppToolBucket_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
+            Remove-Item bin\$env:CONFIGURATION\*.exp
+            Remove-Item bin\$env:CONFIGURATION\*.lib
+            7z a $ZipFileName bin\$env:CONFIGURATION\*
+            }
+        }
+
+artifacts:
+  - path: NppToolBucket_*.zip
+    name: releases
+
+deploy:
+    provider: GitHub
+    auth_token:
+        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
+    artifact: releases
+    draft: false
+    prerelease: false
+    force_update: true
+    on:
+        appveyor_repo_tag: true
+        PlatformToolset: v140
+        configuration: Release
