@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NppToolBucket")]
-[assembly: AssemblyDescription("Plugin of assorted tools for Notepad++")]
+[assembly: AssemblyDescription("Multi-line search and replace")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("phdesign")]
 [assembly: AssemblyProduct("phdesign.NppToolBucket")]
-[assembly: AssemblyCopyright("Copyright © phdesign 2011 - 2012")]
+[assembly: AssemblyCopyright("Copyright © Paul Heasley 2011 - 2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.7.*")]
+[assembly: AssemblyVersion("1.8.*")]
 //[assembly: AssemblyFileVersion("1.0.0.0")]

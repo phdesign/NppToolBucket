@@ -16,7 +16,7 @@
 
 using System;
 using System.Text;
-using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.PluginInfrastructure;
 using phdesign.NppToolBucket.Utilities.Security;
 
 namespace phdesign.NppToolBucket

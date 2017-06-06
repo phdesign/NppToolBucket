@@ -19,12 +19,12 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Infrastructure;
-using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.PluginInfrastructure;
 using phdesign.NppToolBucket.Utilities;
 
 namespace phdesign.NppToolBucket
 {
-    class Main : PluginBase
+    class Main
     {
         private enum CmdIndex
         {
@@ -62,7 +62,7 @@ namespace phdesign.NppToolBucket
                 if (_iniFilePath == null)
                 {
                     var iniFilePathBuilder = new StringBuilder(Win32.MAX_PATH);
-                    Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, iniFilePathBuilder);
+                    Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_GETPLUGINSCONFIGDIR, Win32.MAX_PATH, iniFilePathBuilder);
                     _iniFilePath = iniFilePathBuilder.ToString();
                     _iniFilePath = Path.Combine(_iniFilePath, PluginShortName + ".ini");
                 }
@@ -80,18 +80,18 @@ namespace phdesign.NppToolBucket
             _showTabBarIcons = _settings.GetBool(SettingsSection.Global, "ShowTabBarIcons", true);
             FindAndReplace.Settings = new FindAndReplaceSettings(_settings);
 
-            SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
-            SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
-            SetCommand((int)CmdIndex.Seperator1, "---", null);
-            SetCommand((int)CmdIndex.GenerateGuid, "Generate GUID", GuidGenerator.Show, new ShortcutKey(false, true, true, Keys.G));
-            SetCommand((int)CmdIndex.GenerateLoremIpsum, "Generate Lorem Ipsum", Helpers.GenerateLoremIpsum);
-            SetCommand((int)CmdIndex.ComputeMD5Hash, "Compute MD5 hash", Helpers.ComputeMD5Hash);
-            SetCommand((int)CmdIndex.ComputeSHA1Hash, "Compute SHA1 hash", Helpers.ComputeSHA1Hash);
-            SetCommand((int)CmdIndex.Base64Encode, "Base 64 encode", Helpers.Base64Encode);
-            SetCommand((int)CmdIndex.Base64Decode, "Base 64 decode", Helpers.Base64Decode);
-            SetCommand((int)CmdIndex.Seperator2, "---", null);
-            SetCommand((int)CmdIndex.OpenConfigFile, "Open config file", OpenConfigFile);
-            SetCommand((int)CmdIndex.About, "About", About);
+            PluginBase.SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
+            PluginBase.SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
+            PluginBase.SetCommand((int)CmdIndex.Seperator1, "---", null);
+            PluginBase.SetCommand((int)CmdIndex.GenerateGuid, "Generate GUID", GuidGenerator.Show, new ShortcutKey(false, true, true, Keys.G));
+            PluginBase.SetCommand((int)CmdIndex.GenerateLoremIpsum, "Generate Lorem Ipsum", Helpers.GenerateLoremIpsum);
+            PluginBase.SetCommand((int)CmdIndex.ComputeMD5Hash, "Compute MD5 hash", Helpers.ComputeMD5Hash);
+            PluginBase.SetCommand((int)CmdIndex.ComputeSHA1Hash, "Compute SHA1 hash", Helpers.ComputeSHA1Hash);
+            PluginBase.SetCommand((int)CmdIndex.Base64Encode, "Base 64 encode", Helpers.Base64Encode);
+            PluginBase.SetCommand((int)CmdIndex.Base64Decode, "Base 64 decode", Helpers.Base64Decode);
+            PluginBase.SetCommand((int)CmdIndex.Seperator2, "---", null);
+            PluginBase.SetCommand((int)CmdIndex.OpenConfigFile, "Open config file", OpenConfigFile);
+            PluginBase.SetCommand((int)CmdIndex.About, "About", About);
         }
 
         internal static void SetToolBarIcon()
@@ -106,9 +106,9 @@ namespace phdesign.NppToolBucket
             var pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(
-                nppData._nppHandle,
-                NppMsg.NPPM_ADDTOOLBARICON,
-                _funcItems.Items[(int)CmdIndex.IndentationSettings]._cmdID,
+                PluginBase.nppData._nppHandle,
+                (uint)NppMsg.NPPM_ADDTOOLBARICON,
+                PluginBase._funcItems.Items[(int)CmdIndex.IndentationSettings]._cmdID,
                 pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
 
@@ -120,9 +120,9 @@ namespace phdesign.NppToolBucket
             pTbIcons = Marshal.AllocHGlobal(Marshal.SizeOf(tbIcons));
             Marshal.StructureToPtr(tbIcons, pTbIcons, false);
             Win32.SendMessage(
-                nppData._nppHandle,
-                NppMsg.NPPM_ADDTOOLBARICON,
-                _funcItems.Items[(int)CmdIndex.FindAndReplace]._cmdID,
+                PluginBase.nppData._nppHandle,
+                (uint)NppMsg.NPPM_ADDTOOLBARICON,
+                PluginBase._funcItems.Items[(int)CmdIndex.FindAndReplace]._cmdID,
                 pTbIcons);
             Marshal.FreeHGlobal(pTbIcons);
         }
@@ -140,7 +140,7 @@ namespace phdesign.NppToolBucket
 
         internal static void OpenConfigFile()
         {
-            Win32.SendMessage(nppData._nppHandle, NppMsg.NPPM_DOOPEN, 0, IniFilePath);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, (uint)NppMsg.NPPM_DOOPEN, 0, IniFilePath);
         }
 
         internal static void About()

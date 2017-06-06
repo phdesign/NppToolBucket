@@ -19,7 +19,7 @@ using System.Text;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
-using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.PluginInfrastructure;
 
 namespace phdesign.NppToolBucket
 {
@@ -27,7 +27,7 @@ namespace phdesign.NppToolBucket
     {
         #region Fields
 
-        private readonly Editor _editor;
+        private readonly IScintillaGateway _editor;
         /// <summary>
         /// The single reused instance of the dialog.
         /// </summary>
@@ -47,7 +47,7 @@ namespace phdesign.NppToolBucket
 
         private GuidGenerator()
         {
-            _editor = Editor.GetActive();
+            _editor = new ScintillaGateway(PluginBase.GetCurrentScintilla());
             _dialog = new GuidGeneratorForm();
             _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
@@ -75,7 +75,7 @@ namespace phdesign.NppToolBucket
             if (result != DialogResult.OK) return;
 
             var guids = GetGuids(_dialog.IncludeBraces, _dialog.UseUppercase, _dialog.IncludeHyphens, _dialog.HowMany);
-            _editor.SetSelectedText(guids);
+            _editor.ReplaceSel(guids);
         }
 
         /// <summary>

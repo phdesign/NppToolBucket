@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
-using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.PluginInfrastructure;
 
 namespace phdesign.NppToolBucket
 {
@@ -169,7 +169,7 @@ namespace phdesign.NppToolBucket
 
             switch (doActionEventArgs.Action)
             {
-                case Action.FindNext:
+                case Forms.Action.FindNext:
                     var posFound = FindNext(findText);
                     if (posFound == -1)
                     {
@@ -195,21 +195,21 @@ namespace phdesign.NppToolBucket
                         window.SearchFromBegining = false;
                     }
                     break;
-                case Action.FindAll:
+                case Forms.Action.FindAll:
                     MessageBox.Show(
                         _owner,
                         string.Format("{0} matches found", MarkAll(findText, false)), 
                         window.Text);
                     _searchScope = null;
                     break;
-                case Action.Count:
+                case Forms.Action.Count:
                     MessageBox.Show(
                         _owner,
                         string.Format("{0} matches found", MarkAll(findText, true)), 
                         window.Text);
                     _searchScope = null;
                     break;
-                case Action.Replace:
+                case Forms.Action.Replace:
                     // Todo: Check if readonly
                     // if ((*_ppEditView)->getCurrentBuffer()->isReadOnly()) return false;
                     if (SaveReplaceHistory(replaceText))
@@ -239,7 +239,7 @@ namespace phdesign.NppToolBucket
                         window.SearchFromBegining = false;
                     }
                     break;
-                case Action.ReplaceAll:
+                case Forms.Action.ReplaceAll:
                     // Todo: Check if readonly
                     // if ((*_ppEditView)->getCurrentBuffer()->isReadOnly()) return false;
                     if (SaveReplaceHistory(replaceText))

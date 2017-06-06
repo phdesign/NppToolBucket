@@ -19,7 +19,7 @@ using System.Text;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
-using phdesign.NppToolBucket.PluginCore;
+using phdesign.NppToolBucket.PluginInfrastructure;
 
 namespace phdesign.NppToolBucket
 {
