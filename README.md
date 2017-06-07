@@ -1,7 +1,7 @@
 NppToolBucket
 =============
 
-A plugin for Notepad++ written in C# .NET Framework 2.0.
+A plugin for Notepad++ written in C# .NET Framework 3.5.
 
 Features
 --------
@@ -30,10 +30,13 @@ Copy the NppToolBucket.dll file to your Notepad++\plugins directory.
 Dependencies
 ------------
 
-Requires .NET Framework 2.0 or higher to be installed on the system.
+Requires .NET Framework 3.5 or higher to be installed on the system.
 
 Version history
 ---------------
+
+### v1.8
+* Update project template to support creation of x64 version
 
 ### v1.7
 * Persisting 'Search In' option, window size and window location for the Find and Replace dialog
