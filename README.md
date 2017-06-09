@@ -1,4 +1,4 @@
-NppToolBucket
+NppToolBucket [![Build status](https://ci.appveyor.com/api/projects/status/bamdrbfcssox353p?svg=true)](https://ci.appveyor.com/project/phdesign/npptoolbucket)
 =============
 
 A plugin for Notepad++ written in C# .NET Framework 3.5.
