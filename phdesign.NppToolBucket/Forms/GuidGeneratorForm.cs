@@ -49,6 +49,12 @@ namespace phdesign.NppToolBucket.Forms
             set { numericHowMany.Text = value.ToString(); }
         }
 
+        public bool DontAsk
+        {
+            get { return checkBoxDontAsk.Checked; }
+            set { checkBoxDontAsk.Checked = value; }
+        }
+
         public GuidGeneratorForm()
         {
             InitializeComponent();

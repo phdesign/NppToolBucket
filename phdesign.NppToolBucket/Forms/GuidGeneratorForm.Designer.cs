@@ -35,12 +35,14 @@
             this.checkBoxUppercase = new System.Windows.Forms.CheckBox();
             this.label1 = new System.Windows.Forms.Label();
             this.numericHowMany = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxDontAsk = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericHowMany)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.checkBoxDontAsk);
             this.panel1.Controls.Add(this.buttonGenerate);
             this.panel1.Controls.Add(this.checkBoxHyphens);
             this.panel1.Controls.Add(this.checkBoxBraces);
@@ -50,13 +52,13 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(279, 87);
+            this.panel1.Size = new System.Drawing.Size(305, 110);
             this.panel1.TabIndex = 0;
             // 
             // buttonGenerate
             // 
             this.buttonGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGenerate.Location = new System.Drawing.Point(192, 52);
+            this.buttonGenerate.Location = new System.Drawing.Point(218, 75);
             this.buttonGenerate.Name = "buttonGenerate";
             this.buttonGenerate.Size = new System.Drawing.Size(75, 23);
             this.buttonGenerate.TabIndex = 5;
@@ -98,8 +100,9 @@
             // 
             // label1
             // 
+            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(151, 14);
+            this.label1.Location = new System.Drawing.Point(177, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(63, 13);
             this.label1.TabIndex = 1;
@@ -107,7 +110,8 @@
             // 
             // numericHowMany
             // 
-            this.numericHowMany.Location = new System.Drawing.Point(220, 12);
+            this.numericHowMany.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.numericHowMany.Location = new System.Drawing.Point(246, 12);
             this.numericHowMany.Name = "numericHowMany";
             this.numericHowMany.Size = new System.Drawing.Size(45, 20);
             this.numericHowMany.TabIndex = 0;
@@ -117,11 +121,21 @@
             0,
             0});
             // 
+            // checkBoxDontAsk
+            // 
+            this.checkBoxDontAsk.AutoSize = true;
+            this.checkBoxDontAsk.Location = new System.Drawing.Point(12, 82);
+            this.checkBoxDontAsk.Name = "checkBoxDontAsk";
+            this.checkBoxDontAsk.Size = new System.Drawing.Size(174, 17);
+            this.checkBoxDontAsk.TabIndex = 6;
+            this.checkBoxDontAsk.Text = "Don\'t ask again (use config file)";
+            this.checkBoxDontAsk.UseVisualStyleBackColor = true;
+            // 
             // GuidGeneratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(279, 87);
+            this.ClientSize = new System.Drawing.Size(305, 110);
             this.Controls.Add(this.panel1);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -146,5 +160,6 @@
         private System.Windows.Forms.Button buttonGenerate;
         private System.Windows.Forms.CheckBox checkBoxHyphens;
         private System.Windows.Forms.CheckBox checkBoxBraces;
+        private System.Windows.Forms.CheckBox checkBoxDontAsk;
     }
 }

@@ -59,7 +59,8 @@ namespace phdesign.NppToolBucket
                 IncludeBraces = Settings.IncludeBraces,
                 UseUppercase = Settings.UseUppercase,
                 IncludeHyphens = Settings.IncludeHyphens,
-                HowMany = Settings.HowMany
+                HowMany = Settings.HowMany,
+                DontAsk = Settings.DontAsk
             };
             _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
@@ -83,13 +84,18 @@ namespace phdesign.NppToolBucket
         {
             if (_dialog.Visible) return;
 
-            var result = _dialog.ShowDialog(_owner);
-            if (result != DialogResult.OK) return;
+            if (!Settings.DontAsk)
+            {
+                var result = _dialog.ShowDialog(_owner);
+                if (result != DialogResult.OK) return;
 
-            Settings.IncludeBraces = _dialog.IncludeBraces;
-            Settings.UseUppercase = _dialog.UseUppercase;
-            Settings.IncludeHyphens = _dialog.IncludeHyphens;
-            Settings.HowMany = _dialog.HowMany;
+                Settings.IncludeBraces = _dialog.IncludeBraces;
+                Settings.UseUppercase = _dialog.UseUppercase;
+                Settings.IncludeHyphens = _dialog.IncludeHyphens;
+                Settings.HowMany = _dialog.HowMany;
+                Settings.DontAsk = _dialog.DontAsk;
+            }
+            
             var guids = GetGuids();
             _editor.SetSelectedText(guids);
         }

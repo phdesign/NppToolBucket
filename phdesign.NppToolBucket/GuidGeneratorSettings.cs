@@ -20,6 +20,8 @@ namespace phdesign.NppToolBucket
         public bool IncludeHyphens;
         // How many GUIDs to generate, separated by a new line.
         public int HowMany;
+        // If true, won't prompt for settings each time (will use config file).
+        public bool DontAsk;
 
         #endregion
 
@@ -41,6 +43,7 @@ namespace phdesign.NppToolBucket
             IncludeBraces = _settings.GetBool(SettingsSection.Guids, "IncludeBraces", false);
             IncludeHyphens = _settings.GetBool(SettingsSection.Guids, "IncludeHyphens", true);
             HowMany = _settings.GetInt(SettingsSection.Guids, "HowMany", 1);
+            DontAsk = _settings.GetBool(SettingsSection.Guids, "DontAsk", false);
         }
 
         public void Save()
@@ -49,6 +52,7 @@ namespace phdesign.NppToolBucket
             _settings.Set(SettingsSection.Guids, "IncludeBraces", IncludeBraces);
             _settings.Set(SettingsSection.Guids, "IncludeHyphens", IncludeHyphens);
             _settings.Set(SettingsSection.Guids, "HowMany", HowMany);
+            _settings.Set(SettingsSection.Guids, "DontAsk", DontAsk);
             _settings.Save();
         }
 
