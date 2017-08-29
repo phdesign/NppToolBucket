@@ -1,7 +1,9 @@
+
 NppToolBucket [![Build status](https://ci.appveyor.com/api/projects/status/bamdrbfcssox353p?svg=true)](https://ci.appveyor.com/project/phdesign/npptoolbucket)
 =============
 
 A plugin for Notepad++ written in C# .NET Framework 3.5.
+
 
 Features
 --------
@@ -17,25 +19,36 @@ ToolBucket contains the following features:
 * Base 64 encode
 * Base 64 decode
 
+
 Download
 --------
 
 Release versions can be downloaded from [phdesign.com.au](http://www.phdesign.com.au/npptoolbucket)
+
 
 Installation
 ------------
 
 Copy the NppToolBucket.dll file to your Notepad++\plugins directory.
 
+
 Dependencies
 ------------
 
 Requires .NET Framework 3.5 or higher to be installed on the system.
 
+
 Version history
 ---------------
 
+### v1.9
+
+* Don't insert newline after last GUID
+* Save GUID generation options to config file
+* Add option to not prompt for GUID generation options each time (just use config settings)
+
 ### v1.8
+
 * Update project template to support creation of x64 version
 
 ### v1.7
