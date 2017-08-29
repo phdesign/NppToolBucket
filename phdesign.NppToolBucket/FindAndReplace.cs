@@ -15,7 +15,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Windows.Forms;
 using phdesign.NppToolBucket.Forms;
 using phdesign.NppToolBucket.Infrastructure;
@@ -23,9 +22,6 @@ using phdesign.NppToolBucket.PluginCore;
 
 namespace phdesign.NppToolBucket
 {
-    /// <summary>
-    /// Todo: Check different types of selection (e.g. by column), how does this affect us?
-    /// </summary>
     public class FindAndReplace
     {
         #region Constants

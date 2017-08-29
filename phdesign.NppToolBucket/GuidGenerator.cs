@@ -43,12 +43,24 @@ namespace phdesign.NppToolBucket
 
         #endregion
 
+        #region Properties
+
+        internal static GuidGeneratorSettings Settings;
+
+        #endregion
+
         #region Constructor
 
         private GuidGenerator()
         {
             _editor = Editor.GetActive();
-            _dialog = new GuidGeneratorForm();
+            _dialog = new GuidGeneratorForm
+            {
+                IncludeBraces = Settings.IncludeBraces,
+                UseUppercase = Settings.UseUppercase,
+                IncludeHyphens = Settings.IncludeHyphens,
+                HowMany = Settings.HowMany
+            };
             _owner = new WindowWrapper(PluginBase.nppData._nppHandle);
         }
 
@@ -74,35 +86,35 @@ namespace phdesign.NppToolBucket
             var result = _dialog.ShowDialog(_owner);
             if (result != DialogResult.OK) return;
 
-            var guids = GetGuids(_dialog.IncludeBraces, _dialog.UseUppercase, _dialog.IncludeHyphens, _dialog.HowMany);
+            Settings.IncludeBraces = _dialog.IncludeBraces;
+            Settings.UseUppercase = _dialog.UseUppercase;
+            Settings.IncludeHyphens = _dialog.IncludeHyphens;
+            Settings.HowMany = _dialog.HowMany;
+            var guids = GetGuids();
             _editor.SetSelectedText(guids);
         }
 
         /// <summary>
         /// Generates a string of GUID(s).
         /// </summary>
-        /// <param name="includeBraces">Include braces in front and end of each GUID.</param>
-        /// <param name="useUppercase">Forces string to uppercase.</param>
-        /// <param name="includeHyphens">Inserts hyphens between each set.</param>
-        /// <param name="howMany">How many GUIDs to generate, separated by a new line.</param>
         /// <returns>A string of GUID(s).</returns>
-        private string GetGuids(bool includeBraces, bool useUppercase, bool includeHyphens, int howMany)
+        private string GetGuids()
         {
             var result = new StringBuilder();
-            for (var i = 0; i < howMany; i++)
+            for (var i = 0; i < Settings.HowMany; i++)
             {
                 if (i > 0)
                     result.AppendLine();
-                if (includeBraces)
+                if (Settings.IncludeBraces)
                     result.Append("{");
                 var guid = Guid.NewGuid().ToString();
-                if (useUppercase)
+                if (Settings.UseUppercase)
                     guid = guid.ToUpper();
                 result.Append(guid);
-                if (includeBraces)
+                if (Settings.IncludeBraces)
                     result.Append("}");
             }
-            if (!includeHyphens)
+            if (!Settings.IncludeHyphens)
                 result.Replace("-", "");
 
             return result.ToString();

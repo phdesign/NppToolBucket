@@ -24,7 +24,8 @@ namespace phdesign.NppToolBucket.Infrastructure
     internal enum SettingsSection
     {
         Global,
-        FindAndReplace
+        FindAndReplace,
+        Guids
     }
 
     internal class Settings

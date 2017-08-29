@@ -79,6 +79,7 @@ namespace phdesign.NppToolBucket
             _settings = new Settings(IniFilePath);
             _showTabBarIcons = _settings.GetBool(SettingsSection.Global, "ShowTabBarIcons", true);
             FindAndReplace.Settings = new FindAndReplaceSettings(_settings);
+            GuidGenerator.Settings = new GuidGeneratorSettings(_settings);
 
             SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
             SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
@@ -132,6 +133,7 @@ namespace phdesign.NppToolBucket
             _settings.Set(SettingsSection.Global, "Version", AssemblyUtils.Version);
             //_settings.Set(SettingsSection.Global, "ShowTabBarIcons", _showTabBarIcons);
             FindAndReplace.Settings.Save();
+            GuidGenerator.Settings.Save();
         }
 
         #endregion

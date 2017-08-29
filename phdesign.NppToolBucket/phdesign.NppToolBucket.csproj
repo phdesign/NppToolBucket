@@ -80,6 +80,7 @@
       <DependentUpon>GuidGeneratorForm.cs</DependentUpon>
     </Compile>
     <Compile Include="GuidGenerator.cs" />
+    <Compile Include="GuidGeneratorSettings.cs" />
     <Compile Include="IndentationSettings.cs" />
     <Compile Include="DllExport\DllExportAttribute.cs" />
     <Compile Include="Forms\IndentationSettingsForm.cs">
