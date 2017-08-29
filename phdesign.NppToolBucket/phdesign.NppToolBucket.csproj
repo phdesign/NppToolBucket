@@ -23,7 +23,7 @@
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <Optimize>false</Optimize>
-    <OutputPath>C:\Tools\Notepad++\plugins\</OutputPath>
+    <OutputPath>..\..\..\Users\paul.heasley\AppData\Roaming\Notepad++\plugins\</OutputPath>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

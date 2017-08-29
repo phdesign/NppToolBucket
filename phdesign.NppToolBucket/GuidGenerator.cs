@@ -84,13 +84,15 @@ namespace phdesign.NppToolBucket
         /// <param name="includeBraces">Include braces in front and end of each GUID.</param>
         /// <param name="useUppercase">Forces string to uppercase.</param>
         /// <param name="includeHyphens">Inserts hyphens between each set.</param>
-        /// <param name="howMany">How many GUIDs to generate, seperated my a new line.</param>
+        /// <param name="howMany">How many GUIDs to generate, separated by a new line.</param>
         /// <returns>A string of GUID(s).</returns>
         private string GetGuids(bool includeBraces, bool useUppercase, bool includeHyphens, int howMany)
         {
             var result = new StringBuilder();
             for (var i = 0; i < howMany; i++)
             {
+                if (i > 0)
+                    result.AppendLine();
                 if (includeBraces)
                     result.Append("{");
                 var guid = Guid.NewGuid().ToString();
@@ -99,7 +101,6 @@ namespace phdesign.NppToolBucket
                 result.Append(guid);
                 if (includeBraces)
                     result.Append("}");
-                result.AppendLine();
             }
             if (!includeHyphens)
                 result.Replace("-", "");
