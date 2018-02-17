@@ -75,7 +75,6 @@ namespace phdesign.NppToolBucket
 
         internal static void ClearFindAllInAllDocuments()
         {
-            // Get current doc index
             int originalView;
             Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out originalView);
 
@@ -85,23 +84,21 @@ namespace phdesign.NppToolBucket
             ClearFindAllInView(originalView);
         }
 
-        private static void ClearFindAllInView(int currentView)
+        private static void ClearFindAllInView(int view)
         {
-            var originalDocument = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDOCINDEX, 0, currentView);
-            // Get number of docs
-            var docCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, currentView + 1);
+            var originalDocument = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDOCINDEX, 0, view);
+            var docCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, view + 1);
 
-            // Loop through all docs
             for (int i = 0; i < docCount; i++)
             {
-                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, i);
-                ClearFindAll();
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, view, i);
+                ClearFindAllInCurrentDocument();
             }
             // Restore original doc
-            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, originalDocument);
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, view, originalDocument);
         }
 
-        private static void ClearFindAll()
+        private static void ClearFindAllInCurrentDocument()
         {
             var editor = Editor.GetActive();
             editor.RemoveFindMarks();

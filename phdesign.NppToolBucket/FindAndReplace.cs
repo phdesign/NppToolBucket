@@ -196,14 +196,14 @@ namespace phdesign.NppToolBucket
                 case Forms.Action.FindAll:
                     MessageBox.Show(
                         _owner,
-                        string.Format("{0} matches found", MarkAll(findText, false)), 
+                        string.Format("{0} matches found", FindAll(findText, true)), 
                         window.Text);
                     _searchScope = null;
                     break;
                 case Forms.Action.Count:
                     MessageBox.Show(
                         _owner,
-                        string.Format("{0} matches found", MarkAll(findText, true)), 
+                        string.Format("{0} matches found", FindAll(findText, false)), 
                         window.Text);
                     _searchScope = null;
                     break;
@@ -374,19 +374,55 @@ namespace phdesign.NppToolBucket
             return FindNext(findText);
         }
 
-        private int MarkAll(string findText, bool countOnly)
+        private int FindAll(string findText, bool markAll)
         {
             if (Settings.SearchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined.");
 
-            var marked = 0;
+            var count = 0;
+            if (Settings.SearchIn == SearchInOptions.OpenDocuments)
+            {
+                int originalView;
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out originalView);
+                // Do the other view first so we leave the user back on the original view they started
+                var otherView = originalView == (int)NppMsg.MAIN_VIEW ? (int)NppMsg.SUB_VIEW : (int)NppMsg.MAIN_VIEW;
+                count += FindAllInView(findText, markAll, otherView);
+                count += FindAllInView(findText, markAll, originalView);
+            }
+            else
+            {
+                count = FindAllInCurrentDocument(findText, markAll);
+            }
+            return count;
+        }
+
+        private int FindAllInView(string findText, bool markAll, int view)
+        {
+            var count = 0;
+            var originalDocument = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDOCINDEX, 0, view);
+            var docCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, view + 1);
+
+            for (int i = 0; i < docCount; i++)
+            {
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, view, i);
+                count += FindAllInCurrentDocument(findText, markAll);
+            }
+            // Restore original doc
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, view, originalDocument);
+            return count;
+        }
+
+        private int FindAllInCurrentDocument(string findText, bool markAll)
+        {
+            _editor = Editor.GetActive();
+            var count = 0;
             SetSearchFlags();
             var startPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
             var endPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMax : _editor.GetDocumentLength();
             var posFirstFound = _editor.FindInTarget(findText, startPosition, endPosition);
 
-            if (!countOnly)
+            if (markAll)
             {
                 _editor.RemoveFindMarks();
                 _editor.RemoveAllBookmarks();
@@ -397,9 +433,9 @@ namespace phdesign.NppToolBucket
                 var posFound = posFirstFound;
                 do
                 {
-                    marked++;
+                    count++;
                     var matchEnd = _editor.GetTargetRange().cpMax;
-                    if (!countOnly)
+                    if (markAll)
                     {
                         var line = _editor.LineFromPosition(posFound);
                         _editor.AddBookmark(line);
@@ -407,15 +443,8 @@ namespace phdesign.NppToolBucket
                     }
                     posFound = _editor.FindInTarget(findText, matchEnd, endPosition);
                 } while ((posFound != -1) && (posFound != posFirstFound));
-
-                // Jump to first match
-                if (!countOnly)
-                {
-                    _editor.EnsureRangeVisible(firstMatch.cpMin, firstMatch.cpMax);
-                    _editor.SetSelection(firstMatch.cpMin, firstMatch.cpMax);
-                }
             }
-            return marked;
+            return count;
         }
 
         private void SetSearchFlags() 
