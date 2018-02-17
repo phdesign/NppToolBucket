@@ -132,6 +132,8 @@ namespace phdesign.NppToolBucket
             Settings.WindowSize = window.ClientSize;
             Settings.WindowLocation = window.Location;
 
+            // Get active editor again in case user has switched views (seems editor is tied to view?)
+            _editor = Editor.GetActive();
             var findText = window.FindText;
             var replaceText = window.ReplaceText;
             // Check find text is not null or empty. Replace text can be.
@@ -377,7 +379,7 @@ namespace phdesign.NppToolBucket
             if (Settings.SearchIn == SearchInOptions.SelectedText && 
                 (!_searchScope.HasValue || _searchScope.Value.cpMin == _searchScope.Value.cpMax))
                 throw new InvalidOperationException("Search scope has not been defined.");
-            
+
             var marked = 0;
             SetSearchFlags();
             var startPosition = Settings.SearchIn == SearchInOptions.SelectedText ? _searchScope.Value.cpMin : 0;
@@ -391,6 +393,7 @@ namespace phdesign.NppToolBucket
             }
             if (posFirstFound != -1)
             {
+                var firstMatch = _editor.GetTargetRange();
                 var posFound = posFirstFound;
                 do
                 {
@@ -408,14 +411,8 @@ namespace phdesign.NppToolBucket
                 // Jump to first match
                 if (!countOnly)
                 {
-                    var posNextFound = FindNext(findText);
-                    // Wrap around if not found.
-                    if (posNextFound == -1 && !Settings.SearchFromBegining)
-                    {
-                        Settings.SearchFromBegining = true;
-                        FindNext(findText);
-                        Settings.SearchFromBegining = false;
-                    }
+                    _editor.EnsureRangeVisible(firstMatch.cpMin, firstMatch.cpMax);
+                    _editor.SetSelection(firstMatch.cpMin, firstMatch.cpMax);
                 }
             }
             return marked;
