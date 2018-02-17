@@ -361,6 +361,7 @@ namespace phdesign.NppToolBucket.Forms
             this.checkBoxUseRegularExpression.TabIndex = 5;
             this.checkBoxUseRegularExpression.Text = "Use regular e&xpression";
             this.checkBoxUseRegularExpression.UseVisualStyleBackColor = true;
+            this.checkBoxUseRegularExpression.CheckedChanged += new System.EventHandler(this.checkBoxUseRegularExpression_CheckedChanged);
             // 
             // label4
             // 

@@ -275,6 +275,12 @@ namespace phdesign.NppToolBucket.Forms
                 : SearchFromBeginingText;
         }
 
+        private void checkBoxUseRegularExpression_CheckedChanged(object sender, EventArgs e)
+        {
+            buttonFindAll.Enabled = !checkBoxUseRegularExpression.Checked;
+            buttonCount.Enabled = !checkBoxUseRegularExpression.Checked;
+        }
+
         private void buttonFindNext_Click(object sender, EventArgs e)
         {
             OnDoAction(Action.FindNext);
