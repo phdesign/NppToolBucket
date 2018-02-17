@@ -72,5 +72,40 @@ namespace phdesign.NppToolBucket
             var result = Encoding.UTF8.GetString(bytes);
             editor.SetSelectedText(result);
         }
+
+        internal static void ClearFindAllInAllDocuments()
+        {
+            // Get current doc index
+            int originalView;
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTSCINTILLA, 0, out originalView);
+
+            // Do the other view first so we leave the user back on the original view they started
+            var otherView = originalView == (int)NppMsg.MAIN_VIEW ? (int)NppMsg.SUB_VIEW : (int)NppMsg.MAIN_VIEW;
+            ClearFindAllInView(otherView);
+            ClearFindAllInView(originalView);
+        }
+
+        private static void ClearFindAllInView(int currentView)
+        {
+            var originalDocument = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETCURRENTDOCINDEX, 0, currentView);
+            // Get number of docs
+            var docCount = (int)Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_GETNBOPENFILES, 0, currentView + 1);
+
+            // Loop through all docs
+            for (int i = 0; i < docCount; i++)
+            {
+                Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, i);
+                ClearFindAll();
+            }
+            // Restore original doc
+            Win32.SendMessage(PluginBase.nppData._nppHandle, NppMsg.NPPM_ACTIVATEDOC, currentView, originalDocument);
+        }
+
+        private static void ClearFindAll()
+        {
+            var editor = Editor.GetActive();
+            editor.RemoveFindMarks();
+            editor.RemoveAllBookmarks();
+        }
     }
 }

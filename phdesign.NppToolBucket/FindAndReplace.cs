@@ -187,7 +187,7 @@ namespace phdesign.NppToolBucket
                     }
                     else
                     {
-                        // Turn off search from beining otherwise we'll only ever find the first match.
+                        // Turn off search from begining otherwise we'll only ever find the first match.
                         window.SearchFromBegining = false;
                     }
                     break;

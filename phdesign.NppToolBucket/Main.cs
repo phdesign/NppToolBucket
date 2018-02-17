@@ -40,6 +40,7 @@ namespace phdesign.NppToolBucket
             Seperator2,
             OpenConfigFile,
             About,
+            ClearFindAll
         }
 
         #region Fields
@@ -83,6 +84,7 @@ namespace phdesign.NppToolBucket
 
             SetCommand((int)CmdIndex.IndentationSettings, "Change indentation settings", IndentationSettings.Show, new ShortcutKey(false, true, true, Keys.I));
             SetCommand((int)CmdIndex.FindAndReplace, "Multiline find and replace", FindAndReplace.Show, new ShortcutKey(false, true, true, Keys.F));
+            SetCommand((int)CmdIndex.ClearFindAll, "Clear find all", Helpers.ClearFindAllInAllDocuments);
             SetCommand((int)CmdIndex.Seperator1, "---", null);
             SetCommand((int)CmdIndex.GenerateGuid, "Generate GUID", GuidGenerator.Show, new ShortcutKey(false, true, true, Keys.G));
             SetCommand((int)CmdIndex.GenerateLoremIpsum, "Generate Lorem Ipsum", Helpers.GenerateLoremIpsum);
