@@ -41,6 +41,11 @@ Requires .NET Framework 3.5 or higher to be installed on the system.
 Version history
 ---------------
 
+### v1.10
+
+* Add menu item "Clear find all" to remove all bookmarks
+* Add support for Find All / Count to work with "All Open Documents"
+
 ### v1.9
 
 * Don't insert newline after last GUID
