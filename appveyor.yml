@@ -1,4 +1,4 @@
-version: 1.9.{build}
+version: 1.10.{build}
 image: Visual Studio 2017
 
 
@@ -43,35 +43,3 @@ after_build:
         if ($env:PLATFORM_INPUT -eq "Any CPU" -and $env:CONFIGURATION -eq "Release") {
             Push-AppveyorArtifact "bin\$env:CONFIGURATION\NppToolBucket.dll" -FileName NppToolBucket.dll
         }
-
-        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140") {
-            if($env:PLATFORM_INPUT -eq "x64"){
-            $ZipFileName = "NppToolBucket_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-            Remove-Item bin\x64\$env:CONFIGURATION\*.exp
-            Remove-Item bin\x64\$env:CONFIGURATION\*.lib
-            7z a $ZipFileName bin\x64\$env:CONFIGURATION\*
-            }
-            if($env:PLATFORM_INPUT -eq "Any CPU"){
-            $ZipFileName = "NppToolBucket_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-            Remove-Item bin\$env:CONFIGURATION\*.exp
-            Remove-Item bin\$env:CONFIGURATION\*.lib
-            7z a $ZipFileName bin\$env:CONFIGURATION\*
-            }
-        }
-
-artifacts:
-  - path: NppToolBucket_*.zip
-    name: releases
-
-deploy:
-    provider: GitHub
-    auth_token:
-        secure: !!TODO, see https://www.appveyor.com/docs/deployment/github/#provider-settings!!
-    artifact: releases
-    draft: false
-    prerelease: false
-    force_update: true
-    on:
-        appveyor_repo_tag: true
-        PlatformToolset: v140
-        configuration: Release
